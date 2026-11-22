@@ -1,0 +1,1952 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SAT Math Practice</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* Layout: sticky top bar, page heading, practice card + progress rail. Monochrome, 1px hairlines. */
+:root {
+  --bg: #fafafa; --surface: #ffffff; --ink: #0a0a0a; --muted: #666666; --faint: #8f8f8f;
+  --line: #eaeaea; --line-strong: #d4d4d4; --hover: #f2f2f2;
+  --accent: #0070f3; --accent-soft: #e8f2fe;
+  --good: #0a7a3d; --good-soft: #eefbf3; --warn: #a35200; --bad: #d8261c; --bad-soft: #fff0ef;
+  --on-ink: #ffffff;
+  --font-display: "Geist", ui-sans-serif, system-ui, "Segoe UI", sans-serif;
+  --font-body: "Geist", ui-sans-serif, system-ui, "Segoe UI", sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
+  --shadow: 0 1px 2px rgba(0,0,0,.04), 0 2px 6px rgba(0,0,0,.04);
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #000000; --surface: #0a0a0a; --ink: #ededed; --muted: #a1a1a1; --faint: #7d7d7d;
+    --line: #262626; --line-strong: #3a3a3a; --hover: #171717;
+    --accent: #3291ff; --accent-soft: #0a1f3a;
+    --good: #3ecf7a; --good-soft: #0b2316; --warn: #f5a524; --bad: #ff6166; --bad-soft: #2a0d0e;
+    --on-ink: #0a0a0a; --shadow: none; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #000000; --surface: #0a0a0a; --ink: #ededed; --muted: #a1a1a1; --faint: #7d7d7d;
+  --line: #262626; --line-strong: #3a3a3a; --hover: #171717;
+  --accent: #3291ff; --accent-soft: #0a1f3a;
+  --good: #3ecf7a; --good-soft: #0b2316; --warn: #f5a524; --bad: #ff6166; --bad-soft: #2a0d0e;
+  --on-ink: #0a0a0a; --shadow: none; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background: var(--bg); color: var(--ink); font: 14px/1.5 var(--font-body); -webkit-font-smoothing: antialiased; }
+button, input { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+
+.topbar { position: sticky; top: 0; z-index: 5; background: color-mix(in srgb, var(--bg) 85%, transparent); backdrop-filter: saturate(180%) blur(8px); border-bottom: 1px solid var(--line); }
+.topbar-in { max-width: 1160px; margin: 0 auto; padding: 0 24px; height: 56px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.brand { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 14px; }
+.brand-mark { width: 22px; height: 22px; border-radius: 6px; background: var(--ink); color: var(--on-ink); display: grid; place-items: center; font: 600 12px var(--font-mono); }
+.slash { color: var(--line-strong); font-size: 20px; font-weight: 300; }
+.crumb { color: var(--muted); }
+.badge { font: 500 11px var(--font-mono); border: 1px solid var(--line); border-radius: 999px; padding: 1px 8px; color: var(--muted); }
+.tools { display: flex; gap: 8px; }
+
+.wrap { max-width: 1160px; margin: 0 auto; padding: 0 24px 64px; display: grid; gap: 24px; }
+.pagehead { padding: 40px 0 8px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 16px; }
+h1 { font: 600 32px/1.15 var(--font-display); letter-spacing: -0.04em; margin: 0; text-wrap: balance; }
+.sub { color: var(--muted); font-size: 14px; margin-top: 6px; }
+
+.btn { color: var(--ink); height: 32px; border: 1px solid var(--line); background: var(--surface); border-radius: 6px; padding: 0 12px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 500; transition: background .15s, border-color .15s; }
+.btn:hover { background: var(--hover); border-color: var(--line-strong); }
+.btn.primary { background: var(--ink); border-color: var(--ink); color: var(--on-ink); height: 40px; padding: 0 16px; }
+.btn.primary:hover { opacity: .88; background: var(--ink); }
+.btn.primary:disabled { opacity: .3; cursor: not-allowed; }
+.btn.ghost { border-color: transparent; background: transparent; color: var(--muted); }
+.btn.ghost:hover { color: var(--ink); background: var(--hover); }
+
+.main { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 24px; align-items: start; }
+@media (max-width: 880px) { .main { grid-template-columns: 1fr; } }
+@media (max-width: 480px) { .topbar-in, .wrap { padding-left: 16px; padding-right: 16px; } h1 { font-size: 26px; } .crumb, .slash { display: none; } }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; box-shadow: var(--shadow); }
+
+.controls { padding: 16px; display: grid; gap: 12px; }
+.row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.row-label { font: 500 12px var(--font-mono); color: var(--faint); width: 88px; text-transform: uppercase; letter-spacing: .04em; }
+.chip { height: 30px; border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 0 12px; font-size: 13px; cursor: pointer; color: var(--muted); transition: all .15s; }
+.chip:hover { color: var(--ink); border-color: var(--line-strong); }
+.chip[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--on-ink); }
+
+.qcard { overflow: hidden; }
+.qcard > * { padding-left: 28px; padding-right: 28px; }
+.qmeta { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; font-size: 12px; color: var(--muted); padding-top: 14px; padding-bottom: 14px; border-bottom: 1px solid var(--line); }
+.tag { font-weight: 500; color: var(--ink); }
+.pill { font: 500 11px var(--font-mono); border-radius: 999px; padding: 1px 8px; border: 1px solid var(--line); text-transform: uppercase; letter-spacing: .04em; }
+.pill::before { content: ""; display: inline-block; width: 6px; height: 6px; border-radius: 50%; margin-right: 6px; vertical-align: 1px; background: currentColor; }
+.pill.easy { color: var(--good); } .pill.medium { color: var(--warn); } .pill.hard { color: var(--bad); }
+.dot-sep { color: var(--line-strong); }
+.timer { margin-left: auto; font: 500 12px var(--font-mono); font-variant-numeric: tabular-nums; border: 1px solid var(--line); border-radius: 6px; padding: 2px 8px; }
+.timer.slow { color: var(--bad); border-color: color-mix(in srgb, var(--bad) 40%, var(--line)); }
+.stem { font-size: 18px; line-height: 1.7; max-width: 62ch; padding-top: 28px; letter-spacing: -0.01em; }
+.stem i, .explain i, .choice i { font-family: "Times New Roman", Georgia, serif; font-size: 1.12em; }
+.sys { display: grid; gap: 2px; margin: 0 0 16px; padding: 12px 16px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); font-size: 18px; width: fit-content; min-width: 220px; }
+.frac { display: inline-flex; flex-direction: column; vertical-align: middle; text-align: center; font-size: .9em; line-height: 1.15; margin: 0 2px; }
+.frac > span:first-child { border-bottom: 1.5px solid currentColor; padding: 0 3px; }
+.nowrap { white-space: nowrap; }
+.choices, .spr { margin-top: 24px; }
+.choices { display: grid; gap: 8px; }
+.choice { display: flex; align-items: center; gap: 14px; width: 100%; text-align: left; padding: 12px 14px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); cursor: pointer; font-size: 16px; transition: border-color .15s, background .15s; }
+.choice:hover:not(:disabled) { border-color: var(--line-strong); background: var(--hover); }
+.choice .letter { flex: none; width: 24px; height: 24px; border-radius: 6px; border: 1px solid var(--line-strong); display: grid; place-items: center; font: 500 12px var(--font-mono); color: var(--muted); }
+.choice[aria-pressed="true"] { border-color: var(--ink); box-shadow: 0 0 0 1px var(--ink); }
+.choice[aria-pressed="true"] .letter { background: var(--ink); border-color: var(--ink); color: var(--on-ink); }
+.choice.right { border-color: var(--good); box-shadow: 0 0 0 1px var(--good); background: var(--good-soft); }
+.choice.right .letter { background: var(--good); border-color: var(--good); color: #fff; }
+.choice.wrong { border-color: var(--bad); box-shadow: 0 0 0 1px var(--bad); background: var(--bad-soft); }
+.choice.wrong .letter { background: var(--bad); border-color: var(--bad); color: #fff; }
+.choice:disabled { cursor: default; }
+.spr { display: grid; gap: 8px; max-width: 360px; }
+.spr label { font-size: 13px; font-weight: 500; }
+.spr input { font: 500 20px var(--font-mono); height: 48px; padding: 0 14px; border: 1px solid var(--line-strong); border-radius: 8px; background: var(--surface); width: 100%; transition: box-shadow .15s, border-color .15s; }
+.spr input:focus { border-color: var(--ink); box-shadow: 0 0 0 3px color-mix(in srgb, var(--ink) 12%, transparent); outline: none; }
+.spr .hint { font-size: 12px; color: var(--muted); min-height: 1.4em; }
+.spr .hint.err { color: var(--bad); }
+.actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; padding-top: 24px; padding-bottom: 24px; }
+.kbd { font-size: 12px; color: var(--faint); margin-left: auto; }
+kbd { font: 500 11px var(--font-mono); border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 4px; padding: 0 5px; background: var(--bg); color: var(--muted); }
+#fb:empty { display: none; }
+#fb { padding-bottom: 28px; }
+.feedback { border-radius: 8px; padding: 16px; display: grid; gap: 8px; border: 1px solid var(--line); background: var(--bg); }
+.feedback strong { font-size: 14px; display: flex; align-items: center; gap: 8px; }
+.feedback strong::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+.feedback.ok strong { color: var(--good); } .feedback.no strong { color: var(--bad); }
+.explain { line-height: 1.7; font-size: 15px; }
+.accepted { font: 13px var(--font-mono); color: var(--muted); }
+
+.side { display: grid; gap: 16px; }
+.side .panel { padding: 20px; }
+.side h2 { font: 600 14px var(--font-display); margin: 0 0 14px; }
+.stats { display: grid; grid-template-columns: repeat(3, 1fr); border: 1px solid var(--line); border-radius: 8px; }
+.stat { padding: 10px 12px; }
+.stat + .stat { border-left: 1px solid var(--line); }
+.stat b { display: block; font: 600 22px var(--font-display); letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
+.stat span { font-size: 12px; color: var(--muted); }
+.recent { display: flex; gap: 3px; flex-wrap: wrap; margin-top: 12px; min-height: 10px; }
+.recent span { width: 10px; height: 24px; border-radius: 2px; background: var(--bad); opacity: .85; }
+.recent span.ok { background: var(--good); }
+.skills { display: grid; gap: 14px; margin-top: 18px; padding-top: 18px; border-top: 1px solid var(--line); }
+.sk-top { display: flex; justify-content: space-between; gap: 8px; font-size: 13px; }
+.sk-top span:last-child { color: var(--muted); font: 12px var(--font-mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.bar { height: 4px; border-radius: 2px; background: var(--line); overflow: hidden; margin-top: 6px; }
+.bar > div { height: 100%; background: var(--ink); border-radius: 2px; }
+.bar.low > div { background: var(--bad); } .bar.mid > div { background: var(--warn); } .bar.high > div { background: var(--good); }
+.lvl { font-size: 11px; color: var(--faint); margin-top: 4px; font-family: var(--font-mono); }
+.focus { margin-top: 18px; padding: 12px; border-radius: 8px; border: 1px dashed var(--line-strong); font-size: 13px; color: var(--muted); }
+.focus b { color: var(--ink); font-weight: 600; }
+.soon { font-size: 13px; color: var(--muted); }
+.soon ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; }
+.soon li { display: flex; gap: 8px; align-items: baseline; }
+.soon li::before { content: ""; flex: none; width: 6px; height: 6px; border-radius: 50%; border: 1px solid var(--faint); transform: translateY(-1px); }
+.small-link { background: none; border: none; color: var(--faint); cursor: pointer; font-size: 12px; padding: 0; }
+.small-link:hover { color: var(--bad); }
+.confirm { display: none; gap: 8px; align-items: center; flex-wrap: wrap; font-size: 13px; margin-top: 8px; }
+.confirm.show { display: flex; }
+footer { font-size: 12px; color: var(--faint); border-top: 1px solid var(--line); padding-top: 20px; }
+@media (prefers-reduced-motion: no-preference) { .feedback { animation: rise .2s ease-out; } @keyframes rise { from { transform: translateY(4px); opacity: 0; } to { transform: none; opacity: 1; } } }
+
+/* tabs */
+.tabs { display: flex; gap: 2px; margin-left: 12px; }
+.tab { position: relative; height: 56px; display: inline-flex; align-items: center; padding: 0 10px; color: var(--muted); text-decoration: none; font-size: 14px; }
+.tab:hover { color: var(--ink); }
+.tab[aria-current="page"] { color: var(--ink); }
+.tab[aria-current="page"]::after { content: ""; position: absolute; left: 8px; right: 8px; bottom: -1px; height: 2px; background: var(--ink); border-radius: 2px; }
+.tab kbd { margin-left: 6px; }
+@media (max-width: 640px) { .tab kbd { display: none; } .tabs { margin-left: 4px; } }
+/* donut */
+.pagehead { align-items: center; }
+#donut { margin: -12px 0; font: 7px/7.5px var(--font-mono); color: var(--faint); white-space: pre; user-select: none; letter-spacing: 0; }
+@media (max-width: 720px) { #donut { display: none; } }
+/* topic groups */
+.group { display: grid; grid-template-columns: 88px 1fr; align-items: start; gap: 6px; }
+.group .row-label { padding-top: 7px; }
+/* estimate card */
+.est { display: grid; gap: 4px; padding: 14px; border: 1px solid var(--line); border-radius: 8px; margin-bottom: 14px; }
+.est-label { font: 500 11px var(--font-mono); color: var(--faint); text-transform: uppercase; letter-spacing: .04em; }
+.est-num { font: 600 34px/1 var(--font-display); letter-spacing: -0.04em; font-variant-numeric: tabular-nums; }
+.est-num small { font: 500 13px var(--font-mono); color: var(--muted); letter-spacing: 0; margin-left: 6px; }
+.est-note { font-size: 12px; color: var(--muted); }
+.est-empty .est-num { color: var(--faint); }
+.meter { position: relative; height: 6px; border-radius: 3px; background: var(--line); margin: 8px 0 2px; }
+.meter .rng { position: absolute; top: 0; bottom: 0; background: color-mix(in srgb, var(--ink) 25%, transparent); border-radius: 3px; }
+.meter .pt { position: absolute; top: -3px; width: 2px; height: 12px; background: var(--ink); border-radius: 1px; }
+.meter-scale { display: flex; justify-content: space-between; font: 10px var(--font-mono); color: var(--faint); }
+/* stats view */
+[hidden] { display: none !important; }
+.stats-view { display: grid; gap: 24px; }
+.tiles { display: grid; grid-template-columns: repeat(4, 1fr); border: 1px solid var(--line); border-radius: 12px; background: var(--surface); box-shadow: var(--shadow); }
+.tiles > div { padding: 18px 20px; display: grid; gap: 4px; }
+.tiles > div + div { border-left: 1px solid var(--line); }
+.tiles span { font-size: 13px; color: var(--muted); }
+.tiles b { font: 600 28px/1.1 var(--font-display); letter-spacing: -0.04em; font-variant-numeric: tabular-nums; }
+.tiles em { font-style: normal; font-size: 12px; color: var(--faint); }
+@media (max-width: 760px) { .tiles { grid-template-columns: repeat(2, 1fr); } .tiles > div:nth-child(3) { border-left: none; } .tiles > div:nth-child(n+3) { border-top: 1px solid var(--line); } }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+@media (max-width: 880px) { .grid2 { grid-template-columns: 1fr; } }
+.card { padding: 20px; }
+.card h2 { font: 600 14px var(--font-display); margin: 0 0 4px; }
+.card .cap { font-size: 13px; color: var(--muted); margin: 0 0 16px; max-width: 62ch; }
+.hero-est { display: grid; grid-template-columns: auto 1fr; gap: 28px; align-items: center; }
+@media (max-width: 760px) { .hero-est { grid-template-columns: 1fr; } }
+.hero-est .est-num { font-size: 56px; }
+.chart-wrap { position: relative; }
+.chart-wrap svg { width: 100%; height: 180px; display: block; overflow: visible; }
+.chart-wrap .ax { font: 10px var(--font-mono); fill: var(--faint); }
+.chart-wrap .grid { stroke: var(--line); stroke-width: 1; }
+.chart-wrap .ln { fill: none; stroke: var(--ink); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+.chart-wrap .area { fill: color-mix(in srgb, var(--ink) 7%, transparent); }
+.chart-wrap .cross { stroke: var(--line-strong); stroke-width: 1; }
+.chart-wrap .dot { fill: var(--ink); stroke: var(--surface); stroke-width: 2; }
+.tip { position: absolute; pointer-events: none; background: var(--ink); color: var(--on-ink); font: 12px var(--font-mono); padding: 4px 8px; border-radius: 6px; white-space: nowrap; transform: translate(-50%, -130%); }
+.empty { padding: 28px; text-align: center; color: var(--muted); border: 1px dashed var(--line-strong); border-radius: 8px; font-size: 13px; }
+table.tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
+.tbl th { text-align: left; font: 500 11px var(--font-mono); text-transform: uppercase; letter-spacing: .04em; color: var(--faint); padding: 8px 10px; border-bottom: 1px solid var(--line); }
+.tbl td { padding: 10px; border-bottom: 1px solid var(--line); font-variant-numeric: tabular-nums; }
+.tbl tr:last-child td { border-bottom: none; }
+.tbl td.num, .tbl th.num { text-align: right; font-family: var(--font-mono); }
+.tbl .domrow td { font-weight: 600; background: var(--bg); }
+.tbl .barcell { width: 30%; }
+.tbl-wrap { overflow-x: auto; }
+.drow { display: grid; grid-template-columns: 80px 1fr 90px; gap: 12px; align-items: center; font-size: 13px; padding: 6px 0; }
+.drow .num { font-family: var(--font-mono); text-align: right; color: var(--muted); font-size: 12px; }
+.rt { white-space: nowrap; }
+.rt .rad { border-top: 1.5px solid currentColor; padding: 0 2px; margin-left: 1px; }
+.rt .idx { font-size: .65em; margin-right: -3px; vertical-align: .8em; }
+
+/* figures and data tables inside questions */
+.fig { display: block; max-width: 100%; height: auto; margin: 4px 0 16px; color: var(--ink); }
+.fig .shape { fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linejoin: round; }
+.fig .thin { stroke-width: 1.2; }
+.fig .lbl { font: 15px var(--font-body); fill: currentColor; }
+.fig .gl { stroke: var(--line); stroke-width: 1; }
+.fig .gl2 { stroke: var(--line-strong); }
+.fig .ax { stroke: currentColor; stroke-width: 1.3; }
+.fig .tk { font: 11px var(--font-mono); fill: var(--muted); }
+.fig .axl { font: 12px var(--font-body); fill: var(--muted); }
+.fig .fitln { stroke: var(--accent); stroke-width: 2; }
+.fig .pt { fill: currentColor; stroke: var(--surface); stroke-width: 1.5; }
+.fig .pt.hl { fill: var(--accent); r: 6; }
+.stem p { margin: 0 0 8px; }
+.dt-wrap { overflow-x: auto; margin: 0 0 16px; }
+.dtable { border-collapse: collapse; font-size: 15px; font-variant-numeric: tabular-nums; }
+.dtable th, .dtable td { border: 1px solid var(--line-strong); padding: 6px 14px; text-align: center; }
+.dtable thead th { background: var(--bg); font-weight: 600; font-size: 14px; }
+.dtable tbody th { text-align: left; font-weight: 500; background: var(--bg); }
+/* reference sheet */
+.sheet-back { position: fixed; inset: 0; background: color-mix(in srgb, #000 35%, transparent); z-index: 20; display: grid; place-items: center; padding: 16px; }
+.sheet { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; max-width: 760px; width: 100%; max-height: calc(100% - 32px); overflow: auto; padding: 22px 24px; box-shadow: 0 10px 40px rgba(0,0,0,.18); }
+.sheet-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+.sheet h2 { font: 600 16px var(--font-display); margin: 0; }
+.sheet-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
+.sheet-grid > div { border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; font-size: 14px; }
+.sheet-grid b { display: block; font-size: 12px; font-weight: 500; color: var(--muted); margin-bottom: 4px; }
+.sheet-grid i { font-family: "Times New Roman", Georgia, serif; font-size: 1.1em; }
+.sheet-foot { font-size: 13px; color: var(--muted); margin-top: 14px; display: grid; gap: 4px; }
+</style>
+</head>
+<body>
+<nav class="topbar">
+  <div class="topbar-in">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true">Σ</div>
+      <span>SAT Practice</span>
+      <span class="slash" aria-hidden="true">/</span>
+      <span class="crumb">Math</span>
+      <span class="badge">v3</span>
+      <div class="tabs" role="navigation" aria-label="Views">
+        <a class="tab" href="#practice" id="tab-practice">Practice<kbd>P</kbd></a>
+        <a class="tab" href="#stats" id="tab-stats">Stats<kbd>S</kbd></a>
+      </div>
+    </div>
+    <div class="tools">
+      <button class="btn" type="button" id="ref-btn">Reference sheet <kbd>R</kbd></button>
+      <a class="btn" href="https://www.desmos.com/testing" target="_blank" rel="noopener">Desmos calculator ↗</a>
+    </div>
+  </div>
+</nav>
+<div class="wrap">
+  <div class="pagehead">
+    <div>
+      <h1 id="page-title">SAT Math Practice</h1>
+      <div class="sub" id="page-sub">Endless practice questions, checked by the same rules as the real test.</div>
+    </div>
+    <pre id="donut" aria-hidden="true"></pre>
+  </div>
+
+  <div class="main" id="view-practice">
+    <section style="display:grid; gap:16px; min-width:0;">
+      <div class="panel controls" aria-label="Practice settings">
+        <div id="topics" style="display:grid; gap:10px;"></div>
+        <div class="row"><span class="row-label">Difficulty</span><div class="row" id="diffs"></div></div>
+      </div>
+      <article class="panel qcard" id="qcard" aria-live="polite"></article>
+    </section>
+
+    <aside class="side">
+      <div class="panel">
+        <h2>Your progress</h2>
+        <div id="est-side"></div>
+        <div class="stats">
+          <div class="stat"><b id="st-total">0</b><span>answered</span></div>
+          <div class="stat"><b id="st-acc">–</b><span>correct</span></div>
+          <div class="stat"><b id="st-streak">0</b><span>streak</span></div>
+        </div>
+        <div class="recent" id="recent" aria-label="Last 20 answers"></div>
+        <div class="skills" id="skills"></div>
+        <div class="focus" id="focus"></div>
+        <div style="margin-top:12px;">
+          <button class="small-link" id="reset-btn" type="button">Reset progress</button>
+          <div class="confirm" id="reset-confirm">Clear all progress on this device?
+            <button class="btn" id="reset-yes" type="button">Yes, clear it</button>
+            <button class="btn" id="reset-no" type="button">Cancel</button>
+          </div>
+        </div>
+      </div>
+      <div class="panel soon">
+        <h2>Coming next</h2>
+        <ul><li>Timed full-length test, like the real two-module format</li><li>Sprint mode: as many questions as you can in a set time</li></ul>
+      </div>
+    </aside>
+  </div>
+  <div class="stats-view" id="view-stats" hidden></div>
+  <div class="sheet-back" id="sheet" hidden>
+    <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title">
+      <div class="sheet-head"><h2 id="sheet-title">Reference sheet</h2><button class="btn ghost" type="button" id="ref-close">Close <kbd>Esc</kbd></button></div>
+      <div class="sheet-grid">
+        <div><b>Circle</b><i>A</i> = π<i>r</i><sup>2</sup> &nbsp; <i>C</i> = 2π<i>r</i></div>
+        <div><b>Rectangle</b><i>A</i> = ℓ<i>w</i></div>
+        <div><b>Triangle</b><i>A</i> = ½<i>bh</i></div>
+        <div><b>Pythagorean theorem</b><i>c</i><sup>2</sup> = <i>a</i><sup>2</sup> + <i>b</i><sup>2</sup></div>
+        <div><b>30°-60°-90° triangle</b>sides <i>x</i>, <i>x</i>√3, 2<i>x</i></div>
+        <div><b>45°-45°-90° triangle</b>sides <i>s</i>, <i>s</i>, <i>s</i>√2</div>
+        <div><b>Rectangular prism</b><i>V</i> = ℓ<i>wh</i></div>
+        <div><b>Cylinder</b><i>V</i> = π<i>r</i><sup>2</sup><i>h</i></div>
+        <div><b>Sphere</b><i>V</i> = <sup>4</sup>⁄<sub>3</sub>π<i>r</i><sup>3</sup></div>
+        <div><b>Cone</b><i>V</i> = <sup>1</sup>⁄<sub>3</sub>π<i>r</i><sup>2</sup><i>h</i></div>
+        <div><b>Pyramid</b><i>V</i> = <sup>1</sup>⁄<sub>3</sub>ℓ<i>wh</i></div>
+      </div>
+      <div class="sheet-foot"><span>The number of degrees of arc in a circle is 360. The number of radians of arc in a circle is 2π.</span><span>The sum of the measures in degrees of the angles of a triangle is 180.</span></div>
+    </div>
+  </div>
+  <footer>Progress is saved in this browser only, so each person should use their own device or browser. SAT® is a trademark of the College Board, which is not affiliated with this app.</footer>
+</div>
+
+<script>
+/* ===== Core: math helpers, question generators, answer checker (no DOM) ===== */
+const R = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+const RNZ = (a, b) => { let v; do { v = R(a, b); } while (v === 0); return v; };
+const pick = (a) => a[Math.floor(Math.random() * a.length)];
+const shuffle = (a) => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const gcd = (a, b) => { a = Math.abs(a); b = Math.abs(b); while (b) { [a, b] = [b, a % b]; } return a || 1; };
+function F(n, d = 1) { if (d < 0) { n = -n; d = -d; } const g = gcd(n, d); return { n: n / g, d: d / g }; }
+const fEq = (a, b) => a.n * b.d === b.n * a.d;
+const fVal = (f) => f.n / f.d;
+const fStr = (f) => (f.d === 1 ? String(f.n) : `${f.n}/${f.d}`);
+const MINUS = "−";
+const num = (v) => (v < 0 ? MINUS + Math.abs(v) : String(v));
+const paren = (v) => (v < 0 ? `(${num(v)})` : String(v));
+function fHtml(f) {
+  if (f.d === 1) return num(f.n);
+  return `${f.n < 0 ? MINUS : ""}<span class="frac"><span>${Math.abs(f.n)}</span><span>${f.d}</span></span>`;
+}
+const V = (v) => `<i>${v}</i>`;
+/* linear expression from [[coef, var], ...] */
+function expr(terms) {
+  let out = "";
+  for (const [c, v] of terms) {
+    if (c === 0) continue;
+    const a = Math.abs(c);
+    const body = v ? (a === 1 ? "" : a) + V(v) : String(a);
+    if (out === "") out = (c < 0 ? MINUS : "") + body;
+    else out += (c < 0 ? ` ${MINUS} ` : " + ") + body;
+  }
+  return out || "0";
+}
+const ineqSym = { "<": "&lt;", ">": "&gt;", "<=": "&le;", ">=": "&ge;" };
+const flip = { "<": ">", ">": "<", "<=": ">=", ">=": "<=" };
+
+/* Build a numeric multiple-choice question: 4 distinct options sorted ascending (SAT style). */
+function numericMCQ(correct, distractors) {
+  const seen = new Set([fStr(correct)]);
+  const opts = [correct];
+  for (const d of distractors) {
+    if (opts.length >= 4) break;
+    if (!d || !Number.isInteger(d.n) || !Number.isInteger(d.d)) continue;
+    const k = fStr(d);
+    if (!seen.has(k)) { seen.add(k); opts.push(d); }
+  }
+  let guard = 0;
+  while (opts.length < 4 && guard++ < 200) {
+    const o = F(correct.n + RNZ(-6, 6) * correct.d, correct.d);
+    const k = fStr(o);
+    if (!seen.has(k)) { seen.add(k); opts.push(o); }
+  }
+  opts.sort((a, b) => fVal(a) - fVal(b));
+  return { choices: opts.map(fHtml), answer: opts.findIndex((o) => fEq(o, correct)) };
+}
+function textMCQ(correct, distractors) {
+  const uniq = [...new Set(distractors.filter((d) => d !== correct))].slice(0, 3);
+  if (uniq.length < 3) throw new Error("retry");
+  const opts = shuffle([correct, ...uniq]);
+  return { choices: opts, answer: opts.indexOf(correct) };
+}
+/* Wrap a numeric answer as either MCQ or SPR */
+function numQ(base, value, distractors, sprChance = 0.3) {
+  if (Math.random() < sprChance) return { ...base, type: "spr", value };
+  return { ...base, type: "mcq", ...numericMCQ(value, distractors) };
+}
+
+/* ---------- Skill catalogue (matches sat_math_skills.json) ---------- */
+const DOMAINS = [
+  { id: "alg", name: "Algebra", ready: true, skills: [
+    { id: "alg.lin1", name: "Linear equations in one variable", short: "Linear eq. (1 var)" },
+    { id: "alg.lin2", name: "Linear equations in two variables", short: "Linear eq. (2 var)" },
+    { id: "alg.linfn", name: "Linear functions", short: "Linear functions" },
+    { id: "alg.sys", name: "Systems of linear equations", short: "Systems" },
+    { id: "alg.ineq", name: "Linear inequalities", short: "Inequalities" },
+  ] },
+  { id: "adv", name: "Advanced Math", ready: true, skills: [
+    { id: "adv.equiv", name: "Equivalent expressions", short: "Equivalent expressions" },
+    { id: "adv.nonlin", name: "Nonlinear equations and systems", short: "Nonlinear equations" },
+    { id: "adv.nlfn", name: "Nonlinear functions", short: "Nonlinear functions" },
+  ] },
+  { id: "psda", name: "Problem-Solving & Data Analysis", ready: true, skills: [
+    { id: "psda.ratio", name: "Ratios, rates, proportions, and units", short: "Ratios & rates" },
+    { id: "psda.pct", name: "Percentages", short: "Percentages" },
+    { id: "psda.data1", name: "One-variable data", short: "One-variable data" },
+    { id: "psda.data2", name: "Two-variable data and scatterplots", short: "Scatterplots & models" },
+    { id: "psda.prob", name: "Probability and conditional probability", short: "Probability" },
+    { id: "psda.infer", name: "Inference and margin of error", short: "Margin of error" },
+    { id: "psda.claims", name: "Evaluating statistical claims", short: "Statistical claims" },
+  ] },
+  { id: "geo", name: "Geometry & Trigonometry", ready: true, skills: [
+    { id: "geo.area", name: "Area and volume", short: "Area & volume" },
+    { id: "geo.lines", name: "Lines, angles, and triangles", short: "Lines & angles" },
+    { id: "geo.trig", name: "Right triangles and trigonometry", short: "Right triangles & trig" },
+    { id: "geo.circ", name: "Circles", short: "Circles" },
+  ] },
+];
+const SKILLS = DOMAINS.flatMap((d) => d.skills.map((k) => ({ ...k, domain: d.id })));
+const DIFFS = ["easy", "medium", "hard"];
+
+/* ---------- Generators ---------- */
+function moveConst(b) {
+  return b >= 0 ? `Subtract ${b} from both sides` : `Add ${Math.abs(b)} to both sides`;
+}
+
+const GEN = {
+  "alg.lin1": {
+    easy() {
+      const x = RNZ(-9, 12), a = R(2, 9), b = RNZ(-15, 15), c = a * x + b;
+      return numQ({
+        stem: `If ${expr([[a, "x"], [b, ""]])} = ${num(c)}, what is the value of ${V("x")}?`,
+        explain: `${moveConst(b)}: ${a}${V("x")} = ${num(c - b)}. Then divide both sides by ${a}: ${V("x")} = ${num(x)}.`,
+      }, F(x), [F(c + b, a), F(c - b), F(-x), F(c, a)]);
+    },
+    medium() {
+      if (Math.random() < 0.5) {
+        const x = RNZ(-8, 10), a = R(2, 7), b = RNZ(-6, 6);
+        let c; do { c = RNZ(-5, 9); } while (c === a);
+        const d = a * (x + b) - c * x;
+        return numQ({
+          stem: `What value of ${V("x")} satisfies the equation ${a}(${expr([[1, "x"], [b, ""]])}) = ${expr([[c, "x"], [d, ""]])}?`,
+          explain: `Distribute the ${a}: ${expr([[a, "x"], [a * b, ""]])} = ${expr([[c, "x"], [d, ""]])}. Collect ${V("x")} terms on the left and constants on the right: ${a - c === 1 ? "" : a - c === -1 ? MINUS : num(a - c)}${V("x")} = ${num(d - a * b)}. Divide by ${paren(a - c)}: ${V("x")} = ${num(x)}.`,
+        }, F(x), [F(d + a * b, a - c), F(d - b, a - c), F(-x), F(d - a * b, a + c)]);
+      }
+      const f = R(2, 8) * 5, r = R(15, 45), m = R(3, 12), T = f + r * m;
+      const name = pick(["Maya", "Jonas", "Priya", "Eli", "Sofia"]);
+      return numQ({
+        stem: `A gym charges a one-time sign-up fee of $${f} plus $${r} per month. ${name} has paid the gym a total of $${T}. For how many months has ${name} been a member?`,
+        explain: `If ${V("m")} is the number of months, ${f} + ${r}${V("m")} = ${T}. Subtract ${f}: ${r}${V("m")} = ${T - f}. Divide by ${r}: ${V("m")} = ${m}.`,
+      }, F(m), [F(T, r), F(T + f, r), F(m + 1), F(m - 1)]);
+    },
+    hard() {
+      if (Math.random() < 0.5) {
+        const p = R(2, 9), q = RNZ(-6, 6), s = RNZ(-12, 12);
+        const lhsConst = s - p * q;
+        let t; do { t = RNZ(-15, 15); } while (t === lhsConst);
+        return numQ({
+          stem: `${p}(${expr([[1, "x"], [-q, ""]])}) ${s < 0 ? MINUS : "+"} ${Math.abs(s)} = ${V("k")}${V("x")} ${t < 0 ? MINUS : "+"} ${Math.abs(t)}<br>In the equation above, ${V("k")} is a constant. If the equation has no solution, what is the value of ${V("k")}?`,
+          explain: `The left side simplifies to ${expr([[p, "x"], [lhsConst, ""]])}. A linear equation has no solution when both sides have the same ${V("x")}-coefficient but different constants. The constants ${num(lhsConst)} and ${num(t)} are already different, so the ${V("x")}-coefficients must match: ${V("k")} = ${p}.`,
+        }, F(p), [F(-p), F(q), F(p * q), F(s)]);
+      }
+      let p, q; do { p = R(2, 6); q = R(2, 6); } while (p === q);
+      const r = R(1, 9);
+      const x = F(r * p * q, p + q);
+      return {
+        type: "spr", value: x,
+        stem: `What is the solution to the equation <span class="nowrap"><span class="frac"><span>${V("x")}</span><span>${p}</span></span> + <span class="frac"><span>${V("x")}</span><span>${q}</span></span> = ${r}</span>?`,
+        explain: `Multiply both sides by ${p * q} to clear the fractions: ${q}${V("x")} + ${p}${V("x")} = ${r * p * q}, so ${p + q}${V("x")} = ${r * p * q} and ${V("x")} = ${fHtml(x)}.`,
+      };
+    },
+  },
+
+  "alg.lin2": {
+    easy() {
+      const x0 = RNZ(-6, 6), y0 = RNZ(-8, 8), a = RNZ(-7, 7), b = RNZ(-6, 6), c = a * x0 + b * y0;
+      return numQ({
+        stem: `The equation ${expr([[a, "x"], [b, "y"]])} = ${num(c)} relates ${V("x")} and ${V("y")}. What is the value of ${V("y")} when ${V("x")} = ${num(x0)}?`,
+        explain: `Substitute ${V("x")} = ${num(x0)}: ${expr([[a * x0, ""], [b, "y"]])} = ${num(c)}. So ${expr([[b, "y"]])} = ${num(c - a * x0)}${b === 1 ? "" : `, and dividing by ${paren(b)} gives ${V("y")} = ${num(y0)}`}.`,
+      }, F(y0), [F(c + a * x0, b), F(-y0), F(c - a * x0), F(c, b)]);
+    },
+    medium() {
+      const ctx = pick([
+        () => { const F0 = R(4, 12) * 10, r = R(6, 14) * 5;
+          return { eq: `${V("C")} = ${F0} + ${r}${V("h")}`, setup: `A plumber uses the equation ${V("C")} = ${F0} + ${r}${V("h")} to find the total charge ${V("C")}, in dollars, for a job that takes ${V("h")} hours.`,
+            slope: `The plumber charges $${r} for each hour of work.`, inter: `The plumber charges a fixed $${F0} for every job, before any hours are counted.`,
+            wrongs: [`A job that takes 1 hour costs a total of $${r}.`, `The plumber works ${r} hours on a typical job.`, `A job costs $${F0 + r} for each hour of work.`], sym: [`${r}`, `${F0}`] }; },
+        () => { const S = R(80, 100), D = R(6, 15);
+          return { eq: `${V("B")} = ${S} ${MINUS} ${D}${V("t")}`, setup: `The equation ${V("B")} = ${S} ${MINUS} ${D}${V("t")} estimates the percent of battery ${V("B")} left on a phone ${V("t")} hours after it was unplugged.`,
+            slope: `The battery level drops by ${D} percentage points each hour.`, inter: `The battery level was ${S}% when the phone was unplugged.`,
+            wrongs: [`The battery will be empty after ${D} hours.`, `The battery level is ${D}% after 1 hour.`, `The phone was unplugged for ${S} hours.`], sym: [`${D}`, `${S}`] }; },
+        () => { const S = R(3, 20) * 10, W = R(3, 9) * 5; const n = pick(["Jae", "Amara", "Luca", "Noor"]);
+          return { eq: `${V("A")} = ${S} + ${W}${V("w")}`, setup: `${n} is saving money. The equation ${V("A")} = ${S} + ${W}${V("w")} gives the amount ${V("A")}, in dollars, in ${n}'s savings account ${V("w")} weeks after starting a new plan.`,
+            slope: `${n} adds $${W} to the account each week.`, inter: `${n} had $${S} in the account when the plan started.`,
+            wrongs: [`${n} will have $${W} after 1 week.`, `${n} has been saving for ${W} weeks.`, `${n} adds $${S} to the account each week.`], sym: [`${W}`, `${S}`] }; },
+      ])();
+      if (ctx.sym[0] === ctx.sym[1]) return GEN["alg.lin2"].medium();
+      const askSlope = Math.random() < 0.5;
+      const correct = askSlope ? ctx.slope : ctx.inter;
+      const other = askSlope ? ctx.inter : ctx.slope;
+      return { type: "mcq",
+        stem: `${ctx.setup} What is the best interpretation of ${ctx.sym[askSlope ? 0 : 1]} in this context?`,
+        explain: askSlope
+          ? `${ctx.sym[0]} multiplies the variable, so it is the rate of change: how much the output changes each time the input goes up by 1. ${correct}`
+          : `${ctx.sym[1]} is the constant term, so it is the value when the input is 0 (the starting value). ${correct}`,
+        ...textMCQ(correct, [other, ...shuffle(ctx.wrongs).slice(0, 2)]) };
+    },
+    hard() {
+      const m = F(RNZ(-6, 6), R(1, 4));
+      const x1 = m.d * R(-3, 3), y1 = R(-9, 9);
+      const x2 = x1 + m.d * R(1, 3), y2 = y1 + (m.n * (x2 - x1)) / m.d;
+      const b = y1 - (m.n * x1) / m.d; // integer by construction
+      if (b === 0) return GEN["alg.lin2"].hard();
+      const xi = F(-b * m.d, m.n);
+      return { type: "spr", value: xi,
+        stem: `A line in the ${V("xy")}-plane passes through the points (${num(x1)}, ${num(y1)}) and (${num(x2)}, ${num(y2)}). The line crosses the ${V("x")}-axis at the point (${V("a")}, 0). What is the value of ${V("a")}?`,
+        explain: `Slope = (${num(y2)} ${MINUS} ${paren(y1)}) / (${num(x2)} ${MINUS} ${paren(x1)}) = ${fHtml(m)}. Using ${V("y")} = ${V("m")}${V("x")} + ${V("b")} with (${num(x1)}, ${num(y1)}) gives ${V("b")} = ${num(b)}. Set ${V("y")} = 0: 0 = ${fHtml(m)}${V("x")} + ${paren(b)}, so ${V("x")} = ${fHtml(xi)}.`,
+      };
+    },
+  },
+
+  "alg.linfn": {
+    easy() {
+      const m = RNZ(-7, 9), b = RNZ(-12, 12), k = RNZ(-6, 8), v = m * k + b;
+      return numQ({
+        stem: `The function ${V("f")} is defined by ${V("f")}(${V("x")}) = ${expr([[m, "x"], [b, ""]])}. What is the value of ${V("f")}(${num(k)})?`,
+        explain: `Replace ${V("x")} with ${num(k)}: ${V("f")}(${num(k)}) = ${num(m)}(${num(k)}) + ${paren(b)} = ${num(m * k)} + ${paren(b)} = ${num(v)}.`,
+      }, F(v), [F(m * k - b), F(m + k + b), F(m * k), F(-v)]);
+    },
+    medium() {
+      const m = RNZ(-6, 6), b = RNZ(-10, 10);
+      let p, r; do { p = R(-4, 6); r = R(-4, 6); } while (p === r);
+      const q1 = m * p + b, q2 = m * r + b;
+      const askZero = Math.random() < 0.5;
+      let s; do { s = R(-5, 9); } while (s === p || s === r);
+      const target = askZero ? 0 : s, v = m * target + b;
+      return numQ({
+        stem: `For the linear function ${V("f")}, ${V("f")}(${num(p)}) = ${num(q1)} and ${V("f")}(${num(r)}) = ${num(q2)}. What is the value of ${V("f")}(${num(target)})?`,
+        explain: `Slope = (${num(q2)} ${MINUS} ${paren(q1)}) / (${num(r)} ${MINUS} ${paren(p)}) = ${num(m)}. Then ${V("f")}(${V("x")}) = ${num(m)}${V("x")} + ${V("b")}; using ${V("f")}(${num(p)}) = ${num(q1)} gives ${V("b")} = ${num(b)}. So ${V("f")}(${num(target)}) = ${num(m)}(${num(target)}) + ${paren(b)} = ${num(v)}.`,
+      }, F(v), [F(m * target), F(-m * target + b), F(q1 + q2), F(v + m)]);
+    },
+    hard() {
+      const m = RNZ(-5, 5), b = RNZ(-9, 9), k = RNZ(-8, 8);
+      let p, r; do { p = R(-3, 5); r = R(-3, 5); } while (p === r);
+      const q1 = m * p + b, q2 = m * r + b, t = RNZ(-4, 4);
+      const v = m * 2 * t + b + k;
+      return numQ({
+        stem: `For the linear function ${V("f")}, ${V("f")}(${num(p)}) = ${num(q1)} and ${V("f")}(${num(r)}) = ${num(q2)}. The function ${V("g")} is defined by ${V("g")}(${V("x")}) = ${V("f")}(2${V("x")}) ${k < 0 ? MINUS : "+"} ${Math.abs(k)}. What is the value of ${V("g")}(${num(t)})?`,
+        explain: `First find ${V("f")}: slope = (${num(q2)} ${MINUS} ${paren(q1)}) / (${num(r)} ${MINUS} ${paren(p)}) = ${num(m)}, and ${V("f")}(${V("x")}) = ${expr([[m, "x"], [b, ""]])}. Then ${V("g")}(${num(t)}) = ${V("f")}(${num(2 * t)}) ${k < 0 ? MINUS : "+"} ${Math.abs(k)} = (${num(m * 2 * t + b)}) ${k < 0 ? MINUS : "+"} ${Math.abs(k)} = ${num(v)}.`,
+      }, F(v), [F(m * t + b + k), F(2 * (m * t + b) + k), F(m * 2 * t + b - k), F(m * 2 * t + k)]);
+    },
+  },
+
+  "alg.sys": {
+    easy() {
+      const x0 = RNZ(-6, 8), y0 = RNZ(-8, 10), m = RNZ(-4, 5), c = y0 - m * x0, s = x0 + y0;
+      const askX = Math.random() < 0.5;
+      return numQ({
+        stem: `<div class="sys"><div>${V("y")} = ${expr([[m, "x"], [c, ""]])}</div><div>${V("x")} + ${V("y")} = ${num(s)}</div></div>The solution to the system of equations above is (${V("x")}, ${V("y")}). What is the value of ${askX ? V("x") : V("y")}?`,
+        explain: `Substitute the first equation into the second: ${V("x")} + (${expr([[m, "x"], [c, ""]])}) = ${num(s)}, so ${expr([[m + 1, "x"]])} = ${num(s - c)} and ${V("x")} = ${num(x0)}. Then ${V("y")} = ${num(s)} ${MINUS} ${paren(x0)} = ${num(y0)}.`,
+      }, F(askX ? x0 : y0), [F(askX ? y0 : x0), F(s), F(askX ? -x0 : -y0), F(c)]);
+    },
+    medium() {
+      if (Math.random() < 0.5) {
+        const pa = R(9, 16), pc = R(4, pa - 3), A = R(6, 40), C = R(6, 40), n = A + C, rev = pa * A + pc * C;
+        return numQ({
+          stem: `A school play sold ${n} tickets for a total of $${rev}. Adult tickets cost $${pa} each and student tickets cost $${pc} each. How many adult tickets were sold?`,
+          explain: `Let ${V("a")} = adult tickets and ${V("s")} = student tickets. Then ${V("a")} + ${V("s")} = ${n} and ${pa}${V("a")} + ${pc}${V("s")} = ${rev}. Multiply the first equation by ${pc} and subtract it: ${pa - pc}${V("a")} = ${rev - pc * n}, so ${V("a")} = ${A}.`,
+        }, F(A), [F(C), F(Math.round(rev / pa)), F(n - Math.round(rev / pa)), F(A + 1)]);
+      }
+      let a1, b1, a2, b2;
+      do { a1 = RNZ(-5, 6); b1 = RNZ(-5, 6); a2 = RNZ(-5, 6); b2 = RNZ(-5, 6); } while (a1 * b2 - a2 * b1 === 0);
+      const x0 = RNZ(-6, 6), y0 = RNZ(-6, 6), c1 = a1 * x0 + b1 * y0, c2 = a2 * x0 + b2 * y0;
+      const ask = pick(["x+y", "x-y", "x", "y"]);
+      const val = { "x+y": x0 + y0, "x-y": x0 - y0, x: x0, y: y0 }[ask];
+      const label = { "x+y": `${V("x")} + ${V("y")}`, "x-y": `${V("x")} ${MINUS} ${V("y")}`, x: V("x"), y: V("y") }[ask];
+      return numQ({
+        stem: `<div class="sys"><div>${expr([[a1, "x"], [b1, "y"]])} = ${num(c1)}</div><div>${expr([[a2, "x"], [b2, "y"]])} = ${num(c2)}</div></div>If (${V("x")}, ${V("y")}) is the solution to the system above, what is the value of ${label}?`,
+        explain: `Eliminate one variable: multiply the equations so one variable's coefficients match, then subtract. Solving gives ${V("x")} = ${num(x0)} and ${V("y")} = ${num(y0)}, so ${label} = ${num(val)}. (Tip: in Desmos, type both equations and click the intersection point.)`,
+      }, F(val), [F(x0 + y0), F(x0 - y0), F(y0 - x0), F(-(x0 + y0)), F(x0 * y0)]);
+    },
+    hard() {
+      let a, b; do { a = RNZ(-6, 7); b = RNZ(-6, 7); } while (gcd(a, b) !== 1);
+      const c = RNZ(-12, 12), t = pick([-3, -2, 2, 3, 4]), q = t * b;
+      if (Math.random() < 0.5) {
+        let d; do { d = RNZ(-30, 30); } while (d === t * c);
+        return numQ({
+          stem: `<div class="sys"><div>${expr([[a, "x"], [b, "y"]])} = ${num(c)}</div><div>${V("k")}${V("x")} + ${q < 0 ? MINUS : ""}${Math.abs(q) === 1 ? "" : Math.abs(q)}${V("y")} = ${num(d)}</div></div>In the system of equations above, ${V("k")} is a constant. If the system has no solution, what is the value of ${V("k")}?`,
+          explain: `A system of two linear equations has no solution when the lines are parallel: the coefficients are proportional but the constants are not. The ${V("y")}-coefficient ${num(q)} is ${num(t)} times ${num(b)}, so ${V("k")} must be ${num(t)} × ${paren(a)} = ${num(t * a)}. (Check: ${num(t)} × ${paren(c)} = ${num(t * c)} ≠ ${num(d)}, so the lines are parallel, not the same line.)`,
+        }, F(t * a), [F(a), F(-t * a), F(t * b), F(q - a)]);
+      }
+      const k = t * a;
+      return numQ({
+        stem: `<div class="sys"><div>${expr([[a, "x"], [b, "y"]])} = ${num(c)}</div><div>${expr([[k, "x"], [q, "y"]])} = ${V("d")}</div></div>In the system of equations above, ${V("d")} is a constant. If the system has infinitely many solutions, what is the value of ${V("d")}?`,
+        explain: `Infinitely many solutions means both equations describe the same line, so the second equation must be the first multiplied by one number. ${num(k)} = ${num(t)} × ${paren(a)} and ${num(q)} = ${num(t)} × ${paren(b)}, so ${V("d")} = ${num(t)} × ${paren(c)} = ${num(t * c)}.`,
+      }, F(t * c), [F(c), F(-t * c), F(t + c), F(c * k)]);
+    },
+  },
+
+  "alg.ineq": {
+    easy() { return ineqSolve(R(2, 9)); },
+    medium() {
+      if (Math.random() < 0.5) return ineqSolve(-R(2, 8));
+      const w = R(18, 65), d = R(150, 260), M = R(15, 40) * 100;
+      const maxB = Math.floor((M - d) / w);
+      return { type: "spr", value: F(maxB),
+        stem: `A delivery van can safely carry at most ${M.toLocaleString("en-US")} pounds. The driver and equipment weigh ${d} pounds. Each box weighs ${w} pounds. What is the maximum number of boxes the van can safely carry?`,
+        explain: `If ${V("b")} is the number of boxes, ${d} + ${w}${V("b")} ≤ ${M}. So ${w}${V("b")} ≤ ${M - d} and ${V("b")} ≤ ${(M - d) / w % 1 === 0 ? (M - d) / w : ((M - d) / w).toFixed(2) + "…"}. Boxes come in whole numbers, so the maximum is ${maxB}.`,
+      };
+    },
+    hard() {
+      const m1 = RNZ(-3, 3), b1 = R(-4, 3);
+      let m2; do { m2 = RNZ(-3, 3); } while (m2 === m1);
+      const b2 = R(b1 + 1, b1 + 6);
+      const s1 = pick([">", ">="]), s2 = pick(["<", "<="]);
+      const test = (op, l, r) => ({ "<": l < r, ">": l > r, "<=": l <= r, ">=": l >= r }[op]);
+      const ok1 = ([x, y]) => test(s1, y, m1 * x + b1), ok2 = ([x, y]) => test(s2, y, m2 * x + b2);
+      const pts = []; for (let x = -5; x <= 5; x++) for (let y = -8; y <= 10; y++) pts.push([x, y]);
+      const good = pts.filter((p) => ok1(p) && ok2(p));
+      const near = pts.filter((p) => ok1(p) !== ok2(p));
+      if (!good.length || near.length < 3) return GEN["alg.ineq"].hard();
+      const g = pick(good), bad = shuffle(near).slice(0, 3);
+      const fmt = ([x, y]) => `(${num(x)}, ${num(y)})`;
+      const why = ([x, y]) => `${fmt([x, y])}: ${ok1([x, y]) ? "passes" : "fails"} the first, ${ok2([x, y]) ? "passes" : "fails"} the second`;
+      return { type: "mcq",
+        stem: `<div class="sys"><div>${V("y")} ${ineqSym[s1]} ${expr([[m1, "x"], [b1, ""]])}</div><div>${V("y")} ${ineqSym[s2]} ${expr([[m2, "x"], [b2, ""]])}</div></div>Which point (${V("x")}, ${V("y")}) is a solution to the system of inequalities above?`,
+        explain: `A solution must make both inequalities true. Plug each point in: ${[g, ...bad].map(why).join("; ")}. Only ${fmt(g)} passes both. (In Desmos you can graph both inequalities and see which point is in the overlap.)`,
+        ...textMCQ(fmt(g), bad.map(fmt)) };
+    },
+  },
+};
+
+function ineqSolve(a) {
+  const v = RNZ(-8, 9), b = RNZ(-12, 12), op = pick(["<", ">", "<=", ">="]), c = a * v + b;
+  const res = a < 0 ? flip[op] : op;
+  const opt = (o, val) => `${V("x")} ${ineqSym[o]} ${num(val)}`;
+  const correct = opt(res, v);
+  const wrongV = v + (a < 0 ? 0 : 0) + pick([-2, -1, 1, 2]);
+  const alt = (c + b) / a;
+  const altV = Number.isInteger(alt) && alt !== v ? alt : wrongV;
+  return { type: "mcq",
+    stem: `Which of the following describes all solutions to the inequality ${expr([[a, "x"], [b, ""]])} ${ineqSym[op]} ${num(c)}?`,
+    explain: `${moveConst(b)}: ${a}${V("x")} ${ineqSym[op]} ${num(c - b)}. Divide both sides by ${paren(a)}${a < 0 ? `. Because you divided by a negative number, the inequality sign flips: ` : ": "}${correct}.`,
+    ...textMCQ(correct, [opt(flip[res], v), opt(res, altV === v ? v + 3 : altV), opt(flip[res], altV === v ? v + 3 : altV)]) };
+}
+
+function generate(skill, diff) {
+  let q, tries = 0;
+  for (;;) { try { q = GEN[skill][diff](); break; } catch (e) { if (e.message !== "retry" || ++tries > 50) throw e; } }
+  return { ...q, skill, diff, id: `${skill}-${diff}-${Date.now().toString(36)}${R(100, 999)}` };
+}
+
+/* ---------- SPR (grid-in) answer checker, following digital SAT entry rules ---------- */
+function checkSPR(raw, ans) {
+  const s = String(raw).trim().replace(/−/g, "-");
+  if (!s) return { valid: false, msg: "Type an answer first." };
+  if (/\s/.test(s)) return { valid: false, msg: "No spaces. Mixed numbers like 1 1/2 aren't allowed; enter 3/2 or 1.5 instead." };
+  if (!/^-?(\d+\.?\d*|\.\d+|\d+\/\d+)$/.test(s)) return { valid: false, msg: "Use only digits, one decimal point or one fraction bar (/), and a minus sign in front if negative." };
+  const neg = s.startsWith("-"), max = neg ? 6 : 5;
+  if (s.length > max) return { valid: false, msg: `Too long. The SAT allows ${max} characters for a ${neg ? "negative" : "positive"} answer, counting ${neg ? "the minus sign, " : ""}any decimal point or fraction bar.` };
+  const body = neg ? s.slice(1) : s;
+  if (body.includes("/")) {
+    const [a, b] = body.split("/").map(Number);
+    if (b === 0) return { valid: false, msg: "The denominator can't be 0." };
+    return { valid: true, ok: fEq(F(neg ? -a : a, b), ans) };
+  }
+  const [ip, fp = ""] = body.split(".");
+  const k = fp.length, scaled = Number((ip || "0") + fp);
+  if (fEq(F(neg ? -scaled : scaled, 10 ** k), ans)) return { valid: true, ok: true };
+  // Answers that don't fit as decimals: accept truncated or rounded if every character slot is used.
+  const ansNeg = ans.n < 0;
+  if (s.length === max && k > 0 && ansNeg === neg) {
+    const exact = (Math.abs(ans.n) * 10 ** k) / ans.d;
+    if (scaled === Math.floor(exact + 1e-9) || scaled === Math.round(exact)) return { valid: true, ok: true };
+  }
+  return { valid: true, ok: false };
+}
+
+/* Forms the SAT would accept, for showing after a question */
+function acceptedForms(ans) {
+  const forms = [fStr(ans)];
+  if (ans.d === 1) return forms;
+  const neg = ans.n < 0, max = neg ? 6 : 5;
+  let d = ans.d; while (d % 2 === 0) d /= 2; while (d % 5 === 0) d /= 5;
+  if (d === 1) { const dec = String(fVal(ans)).replace(/^(-?)0\./, "$1."); if (dec.length <= max) { forms.push(dec); return forms.filter((f) => checkSPR(f, ans).ok); } }
+  const intPart = String(Math.trunc(Math.abs(fVal(ans))));
+  const lead = intPart === "0" ? "" : intPart;
+  const k = max - (neg ? 1 : 0) - lead.length - 1;
+  if (k >= 1) {
+    const exact = (Math.abs(ans.n) * 10 ** k) / ans.d;
+    const mk = (v) => { const str = String(v).padStart(k + lead.length, "0"); return (neg ? "-" : "") + str.slice(0, str.length - k) + "." + str.slice(-k); };
+    const t = mk(Math.floor(exact + 1e-9)), r = mk(Math.round(exact));
+    forms.push(t); if (r !== t) forms.push(r);
+  }
+  return forms.filter((f) => checkSPR(f, ans).ok);
+}
+
+if (typeof module !== "undefined") module.exports = { GEN, SKILLS, DOMAINS, DIFFS, generate, checkSPR, acceptedForms, F, fStr, fVal };
+
+</script>
+<script>
+/* ===== Advanced Math generators (extends GEN from core.js) ===== */
+/* polynomial from coefficients, highest power first */
+function poly(cs, v = "x") {
+  const n = cs.length - 1;
+  let out = "";
+  cs.forEach((c, i) => {
+    if (c === 0) return;
+    const p = n - i, a = Math.abs(c);
+    const vv = p === 0 ? "" : p === 1 ? V(v) : `${V(v)}<sup>${p}</sup>`;
+    const body = p === 0 ? String(a) : (a === 1 ? "" : a) + vv;
+    out += out === "" ? (c < 0 ? MINUS : "") + body : (c < 0 ? ` ${MINUS} ` : " + ") + body;
+  });
+  return out || "0";
+}
+const lin = (a, b) => `(${poly([a, b])})`; // (ax + b)
+const xPow = (e) => (e === 1 ? V("x") : `${V("x")}<sup>${typeof e === "number" ? num(e) : e}</sup>`);
+const sqrtH = (inner) => `<span class="rt">√<span class="rad">${inner}</span></span>`;
+const nrootH = (n, inner) => (n === 2 ? sqrtH(inner) : `<span class="rt"><sup class="idx">${n}</sup>√<span class="rad">${inner}</span></span>`);
+const pm = (h, r) => `${num(h)} ± ${r}`;
+
+Object.assign(GEN, {
+  "adv.equiv": {
+    easy() {
+      if (Math.random() < 0.5) {
+        const P = [RNZ(-6, 8), RNZ(-9, 9), RNZ(-12, 12)], Q = [RNZ(-5, 6), RNZ(-9, 9), RNZ(-12, 12)];
+        const minus = Math.random() < 0.5, sg = minus ? -1 : 1;
+        const Rr = P.map((p, i) => p + sg * Q[i]);
+        const W = P.map((p, i) => p - sg * Q[i]);
+        const wrongs = [0, 1, 2].map((j) => poly(Rr.map((r, i) => (i === j ? W[i] : r))));
+        return { type: "mcq",
+          stem: `Which expression is equivalent to (${poly(P)}) ${minus ? MINUS : "+"} (${poly(Q)})?`,
+          explain: minus
+            ? `Subtracting a polynomial means changing the sign of every one of its terms: (${poly(P)}) + (${poly(Q.map((q) => -q))}). Then combine like terms: ${poly(Rr)}.`
+            : `Combine like terms: ${V("x")}<sup>2</sup> terms ${num(P[0])} + ${paren(Q[0])} = ${num(Rr[0])}, ${V("x")} terms ${num(P[1])} + ${paren(Q[1])} = ${num(Rr[1])}, constants ${num(P[2])} + ${paren(Q[2])} = ${num(Rr[2])}. Result: ${poly(Rr)}.`,
+          ...textMCQ(poly(Rr), shuffle(wrongs)) };
+      }
+      const a = R(2, 7), b = RNZ(-8, 8), c = R(2, 6), d = RNZ(-8, 8);
+      const res = [a - c, a * b - c * d];
+      return { type: "mcq",
+        stem: `Which expression is equivalent to ${a}${lin(1, b)} ${MINUS} ${c}${lin(1, d)}?`,
+        explain: `Distribute each group: ${a}${lin(1, b)} = ${poly([a, a * b])} and ${c}${lin(1, d)} = ${poly([c, c * d])}. The minus sign applies to both terms of the second result: ${poly([a, a * b])} + (${poly([-c, -c * d])}). Combine like terms: ${poly(res)}.`,
+        ...textMCQ(poly(res), [poly([a - c, a * b + c * d]), poly([a + c, a * b - c * d]), poly([a - c, b - d])]) };
+    },
+    medium() {
+      const a = R(1, 5), b = RNZ(-7, 7), c = R(1, 5), d = RNZ(-7, 7);
+      const res = [a * c, a * d + b * c, b * d];
+      const r = Math.random();
+      if (r < 0.4) {
+        return { type: "mcq",
+          stem: `Which expression is equivalent to ${lin(a, b)}${lin(c, d)}?`,
+          explain: `Multiply every term in the first factor by every term in the second (FOIL): ${a * c === 1 ? "" : a * c}${V("x")}<sup>2</sup> + ${paren(a * d)}${V("x")} + ${paren(b * c)}${V("x")} + ${paren(b * d)}. Combine the ${V("x")} terms: ${poly(res)}.`,
+          ...textMCQ(poly(res), [poly([a * c, 0, b * d]), poly([a * c, a * d - b * c, b * d]), poly([a * c, a * d + b * c, -b * d]), poly([a * c, b + d, b * d])]) };
+      }
+      if (r < 0.7) {
+        return { type: "spr", value: F(res[1]),
+          stem: `The expression ${lin(a, b)}${lin(c, d)} is equivalent to ${V("p")}${V("x")}<sup>2</sup> + ${V("q")}${V("x")} + ${V("r")}, where ${V("p")}, ${V("q")}, and ${V("r")} are constants. What is the value of ${V("q")}?`,
+          explain: `Expand: the ${V("x")} terms come from the outer and inner products, ${a}·${paren(d)} + ${paren(b)}·${c} = ${num(a * d)} + ${paren(b * c)} = ${num(res[1])}. So ${V("q")} = ${num(res[1])}.`,
+        };
+      }
+      let r1, r2; do { r1 = RNZ(-9, 9); r2 = RNZ(-9, 9); } while (r1 === r2 || r1 === -r2);
+      const fac = (k) => `(${poly([1, -k])})`;
+      return { type: "mcq",
+        stem: `Which of the following is a factor of ${poly([1, -(r1 + r2), r1 * r2])}?`,
+        explain: `Find two numbers that multiply to ${num(r1 * r2)} and add to ${num(-(r1 + r2))}: ${num(-r1)} and ${num(-r2)}. So ${poly([1, -(r1 + r2), r1 * r2])} = ${fac(r1)}${fac(r2)}, and ${fac(r1)} is a factor.`,
+        ...textMCQ(fac(r1), [fac(-r1), fac(-r2), fac(r1 + r2), fac(r1 * r2)]) };
+    },
+    hard() {
+      const r = Math.random();
+      if (r < 0.4) {
+        const p = R(2, 5), q = RNZ(-6, 6), k = RNZ(-9, 9), N = k * q, m = p * q + k;
+        return numQ({
+          stem: `If (${p}${V("x")} + ${V("k")})${lin(1, q)} = ${p}${V("x")}<sup>2</sup> + ${V("m")}${V("x")} ${N < 0 ? MINUS : "+"} ${Math.abs(N)} for all values of ${V("x")}, where ${V("k")} and ${V("m")} are constants, what is the value of ${V("m")}?`,
+          explain: `Expanding the left side gives ${p}${V("x")}<sup>2</sup> + (${p}·${paren(q)} + ${V("k")})${V("x")} ${q < 0 ? MINUS : "+"} ${Math.abs(q) === 1 ? "" : Math.abs(q)}${V("k")}. Matching constants: ${num(q)}${V("k")} = ${num(N)}, so ${V("k")} = ${num(k)}. Then ${V("m")} = ${num(p * q)} + ${paren(k)} = ${num(m)}.`,
+        }, F(m), [F(p * q), F(k), F(p * q - k), F(-m), F(p + q + k)]);
+      }
+      if (r < 0.7) {
+        let m, n; do { m = R(2, 7); n = R(2, 5); } while (m === n || gcd(m, n) !== 1);
+        const fe = (a, b) => xPow(`${a}/${b}`);
+        return { type: "mcq",
+          stem: `Which expression is equivalent to ${nrootH(n, xPow(m))}, for ${V("x")} &gt; 0?`,
+          explain: `A root is a fractional exponent: the index ${n} goes in the denominator and the power ${m} in the numerator, so ${nrootH(n, xPow(m))} = ${fe(m, n)}.`,
+          ...textMCQ(fe(m, n), [fe(n, m), xPow(m - n), xPow(m * n)]) };
+      }
+      const a = R(2, 6), b = R(1, 5), c = R(2, 4), d = R(1, 9), e = c * (a + b) - d;
+      return { type: "mcq",
+        stem: `Which expression is equivalent to <span class="nowrap"><span class="frac"><span>(${xPow(a)} · ${xPow(b)})<sup>${c}</sup></span><span>${xPow(d)}</span></span></span>, for ${V("x")} &gt; 0?`,
+        explain: `Multiply powers by adding exponents: ${xPow(a)} · ${xPow(b)} = ${xPow(a + b)}. Raise a power to a power by multiplying: (${xPow(a + b)})<sup>${c}</sup> = ${xPow(c * (a + b))}. Divide by subtracting: ${xPow(c * (a + b))} ÷ ${xPow(d)} = ${xPow(e)}.`,
+        ...textMCQ(xPow(e), [xPow(a * b * c - d), xPow(a + b + c - d), xPow(c * (a + b) + d), xPow(c * a + b - d)]) };
+    },
+  },
+
+  "adv.nonlin": {
+    easy() {
+      if (Math.random() < 0.5) {
+        const a = R(2, 6), x = R(2, 12), N = a * x * x;
+        return numQ({
+          stem: `What is the positive solution to the equation ${a}${V("x")}<sup>2</sup> = ${N}?`,
+          explain: `Divide both sides by ${a}: ${V("x")}<sup>2</sup> = ${x * x}. Take the square root: ${V("x")} = ±${x}. The positive solution is ${x}.`,
+        }, F(x), [F(x * x), F(N / 2), F(2 * x), F(x + a)]);
+      }
+      let p, q; do { p = RNZ(-9, 9); q = RNZ(-9, 9); } while (p === -q);
+      return numQ({
+        stem: `What is the sum of the solutions to ${lin(1, -p)}${lin(1, q)} = 0?`,
+        explain: `A product is 0 when a factor is 0: ${poly([1, -p])} = 0 gives ${V("x")} = ${num(p)}, and ${poly([1, q])} = 0 gives ${V("x")} = ${num(-q)}. The sum is ${num(p)} + ${paren(-q)} = ${num(p - q)}.`,
+      }, F(p - q), [F(p + q), F(q - p), F(-p - q), F(p * q)]);
+    },
+    medium() {
+      const r = Math.random();
+      if (r < 0.4) {
+        const r1 = R(1, 12), r2 = -R(1, 12), b = -(r1 + r2), c = r1 * r2;
+        return numQ({
+          stem: `What is the positive solution to the equation ${poly([1, b, c])} = 0?`,
+          explain: `Factor: you need two numbers that multiply to ${num(c)} and add to ${num(b)}, which are ${num(-r1)} and ${num(-r2)}. So ${lin(1, -r1)}${lin(1, -r2)} = 0, giving ${V("x")} = ${r1} or ${V("x")} = ${num(r2)}. The positive solution is ${r1}.`,
+        }, F(r1), [F(-r2), F(r1 + r2 === 0 ? r1 + 1 : Math.abs(r1 + r2)), F(Math.abs(c)), F(r1 - r2)]);
+      }
+      if (r < 0.7) {
+        const b = R(2, 9), p = R(1, 4), x = R(-3, Math.floor((b * b) / p)), c = b * b - p * x;
+        return numQ({
+          stem: `What value of ${V("x")} satisfies the equation ${sqrtH(poly([p, c]))} = ${b}?`,
+          explain: `Square both sides: ${poly([p, c])} = ${b * b}. ${moveConst(c)}: ${p === 1 ? "" : p}${V("x")} = ${num(b * b - c)}${p === 1 ? "" : `, so ${V("x")} = ${num(x)}`}. Check: ${sqrtH(String(b * b))} = ${b}. ✓`,
+        }, F(x), [F(b - c), F(b * b + c), F(-x), F(b * b)]);
+      }
+      const a = R(2, 20), c = R(2, 6), b = RNZ(-6, 6), x = F(a - b * c, c);
+      return { type: "spr", value: x,
+        stem: `What is the solution to the equation <span class="nowrap"><span class="frac"><span>${a}</span><span>${poly([1, b])}</span></span> = ${c}</span>?`,
+        explain: `Multiply both sides by (${poly([1, b])}): ${a} = ${c}(${poly([1, b])}) = ${poly([c, c * b])}. ${moveConst(c * b)}: ${c}${V("x")} = ${num(a - c * b)}, so ${V("x")} = ${fHtml(x)}.`,
+      };
+    },
+    hard() {
+      const r = Math.random();
+      if (r < 0.33) {
+        const a = R(1, 3), t = RNZ(-5, 5), b = 2 * a * t, k = a * t * t;
+        return numQ({
+          stem: `In the equation ${poly([a, b])} + ${V("k")} = 0, ${V("k")} is a constant. If the equation has exactly one real solution, what is the value of ${V("k")}?`,
+          explain: `A quadratic has exactly one real solution when its discriminant ${V("b")}<sup>2</sup> ${MINUS} 4${V("a")}${V("c")} is 0: ${paren(b)}<sup>2</sup> ${MINUS} 4(${a})${V("k")} = 0, so ${b * b} = ${4 * a}${V("k")} and ${V("k")} = ${k}.`,
+        }, F(k), [F(b * b), F(-k), F(Math.abs(b) / 2 === k ? k + a : Math.abs(b) / 2), F(2 * k), F(b * b / 2)]);
+      }
+      if (r < 0.66) {
+        let r1, r2; do { r1 = RNZ(-6, 6); r2 = RNZ(-6, 6); } while (r1 === r2);
+        const m = RNZ(-4, 4), d = RNZ(-8, 8), b = m - (r1 + r2), c = d + r1 * r2;
+        const big = Math.max(r1, r2), yv = m * big + d;
+        return numQ({
+          stem: `<div class="sys"><div>${V("y")} = ${poly([1, b, c])}</div><div>${V("y")} = ${poly([m, d])}</div></div>The graphs of the equations above intersect at two points. What is the ${V("y")}-coordinate of the intersection point with the greater ${V("x")}-coordinate?`,
+          explain: `Set the right sides equal: ${poly([1, b, c])} = ${poly([m, d])}, so ${poly([1, b - m, c - d])} = 0. Factor: ${lin(1, -r1)}${lin(1, -r2)} = 0, so ${V("x")} = ${num(Math.min(r1, r2))} or ${V("x")} = ${num(big)}. With ${V("x")} = ${num(big)}: ${V("y")} = ${num(m)}(${num(big)}) + ${paren(d)} = ${num(yv)}. (Desmos: graph both and click the intersections.)`,
+        }, F(yv), [F(m * Math.min(r1, r2) + d), F(big), F(-yv), F(yv + m)]);
+      }
+      const h = RNZ(-6, 6), D = pick([2, 3, 5, 6, 7, 10, 11, 13]), c = h * h - D;
+      const correct = pm(-h, sqrtH(D));
+      return { type: "mcq",
+        stem: `What are the solutions to ${poly([1, 2 * h, c])} = 0?`,
+        explain: `Complete the square: ${poly([1, 2 * h, 0])} = ${num(-c)}. Add ${h * h} to both sides: (${poly([1, h])})<sup>2</sup> = ${D}. Take the square root: ${poly([1, h])} = ±${sqrtH(D)}, so ${V("x")} = ${correct}. (The quadratic formula gives the same result.)`,
+        ...textMCQ(correct, [pm(h, sqrtH(D)), pm(-h, `2${sqrtH(D)}`), pm(-2 * h, `2${sqrtH(D)}`)]) };
+    },
+  },
+
+  "adv.nlfn": {
+    easy() {
+      if (Math.random() < 0.5) {
+        const a = RNZ(-3, 4), b = RNZ(-6, 6), c = RNZ(-9, 9), k = RNZ(-4, 4), v = a * k * k + b * k + c;
+        return numQ({
+          stem: `The function ${V("f")} is defined by ${V("f")}(${V("x")}) = ${poly([a, b, c])}. What is the value of ${V("f")}(${num(k)})?`,
+          explain: `Replace every ${V("x")} with ${num(k)}: ${a === 1 ? "" : a === -1 ? MINUS : num(a)}(${num(k)})<sup>2</sup> + ${paren(b)}(${num(k)}) + ${paren(c)} = ${num(a * k * k)} + ${paren(b * k)} + ${paren(c)} = ${num(v)}. Remember (${num(k)})<sup>2</sup> = ${k * k}.`,
+        }, F(v), [F(-a * k * k + b * k + c), F(a * 2 * k + b * k + c), F(a * k * k - b * k + c), F(v + c)]);
+      }
+      const a = R(2, 9), b = R(2, 4), k = R(1, 3), v = a * b ** k;
+      return numQ({
+        stem: `The function ${V("g")} is defined by ${V("g")}(${V("x")}) = ${a}(${b})<sup>${V("x")}</sup>. What is the value of ${V("g")}(${k})?`,
+        explain: `Do the exponent first: ${b}<sup>${k}</sup> = ${b ** k}. Then multiply by ${a}: ${a} × ${b ** k} = ${v}.`,
+      }, F(v), [F((a * b) ** k), F(a * b * k), F(a + b ** k), F(a * k + b)]);
+    },
+    medium() {
+      const r = Math.random();
+      if (r < 0.4) {
+        const ctx = pick([
+          () => { const A = R(8, 40) * 500, g = R(2, 9);
+            return { f: `${V("P")}(${V("t")}) = ${A.toLocaleString("en-US")}(1.0${g})<sup>${V("t")}</sup>`, what: `the population of a town ${V("t")} years after 2020`, base: `1.0${g}`, init: A.toLocaleString("en-US"),
+              baseOk: `The population increases by ${g}% each year.`, baseWrong: [`The population increases by 10${g}% each year.`, `The population increases by 1.0${g} people each year.`, `The population increases by 0.0${g}% each year.`],
+              initOk: `The population of the town in 2020 was ${A.toLocaleString("en-US")}.`, initWrong: [`The population increases by ${A.toLocaleString("en-US")} people each year.`, `The population will reach ${A.toLocaleString("en-US")} in ${g} years.`, `The population of the town after 1 year was ${A.toLocaleString("en-US")}.`] }; },
+          () => { const A = R(18, 45) * 1000, k = pick([80, 82, 85, 88, 90]), loss = 100 - k;
+            return { f: `${V("V")}(${V("t")}) = ${A.toLocaleString("en-US")}(0.${k})<sup>${V("t")}</sup>`, what: `the value, in dollars, of a car ${V("t")} years after it was bought`, base: `0.${k}`, init: A.toLocaleString("en-US"),
+              baseOk: `The car loses ${loss}% of its value each year.`, baseWrong: [`The car loses ${k}% of its value each year.`, `The car loses $0.${k} of its value each year.`, `The car's value increases by ${k}% each year.`],
+              initOk: `The car cost $${A.toLocaleString("en-US")} when it was bought.`, initWrong: [`The car loses $${A.toLocaleString("en-US")} of value each year.`, `The car's value after 1 year is $${A.toLocaleString("en-US")}.`, `The car will be worth $0 after ${A / 1000} years.`] }; },
+        ])();
+        const askBase = Math.random() < 0.6;
+        return { type: "mcq",
+          stem: `The function ${ctx.f} models ${ctx.what}. What is the best interpretation of ${askBase ? ctx.base : ctx.init} in this context?`,
+          explain: askBase
+            ? `In ${V("a")}(${V("b")})<sup>${V("t")}</sup>, the base ${V("b")} is the growth or decay factor. ${ctx.base} = 1 ${Number(ctx.base) > 1 ? "+" : MINUS} ${Math.abs(Math.round((Number(ctx.base) - 1) * 100))}%, so each year the amount is multiplied by ${ctx.base}. ${ctx.baseOk}`
+            : `${ctx.init} is the value when ${V("t")} = 0, because any number to the power 0 is 1. ${ctx.initOk}`,
+          ...textMCQ(askBase ? ctx.baseOk : ctx.initOk, askBase ? ctx.baseWrong : ctx.initWrong) };
+      }
+      const a = RNZ(-4, 4), h = RNZ(-7, 7), k = RNZ(-12, 12), up = a > 0;
+      const form = `${V("f")}(${V("x")}) = ${a === 1 ? "" : a === -1 ? MINUS : num(a)}${lin(1, -h)}<sup>2</sup> ${k < 0 ? MINUS : "+"} ${Math.abs(k)}`;
+      if (r < 0.75) {
+        return numQ({
+          stem: `The function ${V("f")} is defined by ${form}. What is the ${up ? "minimum" : "maximum"} value of ${V("f")}(${V("x")})?`,
+          explain: `This is vertex form ${V("a")}(${V("x")} ${MINUS} ${V("h")})<sup>2</sup> + ${V("k")}, with vertex (${num(h)}, ${num(k)}). Because ${V("a")} = ${num(a)} is ${up ? "positive, the parabola opens up and the vertex is the lowest point" : "negative, the parabola opens down and the vertex is the highest point"}. The ${up ? "minimum" : "maximum"} value is the ${V("y")}-coordinate, ${num(k)}.`,
+        }, F(k), [F(h), F(-h), F(-k), F(a + k)]);
+      }
+      const yi = a * h * h + k;
+      return numQ({
+        stem: `The function ${V("f")} is defined by ${form}. The graph of ${V("y")} = ${V("f")}(${V("x")}) crosses the ${V("y")}-axis at (0, ${V("b")}). What is the value of ${V("b")}?`,
+        explain: `The ${V("y")}-intercept is ${V("f")}(0) = ${a === 1 ? "" : a === -1 ? MINUS : num(a)}(0 ${MINUS} ${paren(h)})<sup>2</sup> + ${paren(k)} = ${num(a)}(${h * h}) + ${paren(k)} = ${num(yi)}.`,
+      }, F(yi), [F(k), F(a * h + k), F(-a * h * h + k), F(a * h * h - k)]);
+    },
+    hard() {
+      const r = Math.random();
+      if (r < 0.35) {
+        const a = RNZ(-3, 3), t = RNZ(-5, 5), c = RNZ(-12, 12), b = 2 * a * t, h = -t, k = c - a * t * t;
+        return numQ({
+          stem: `The function ${V("f")} is defined by ${V("f")}(${V("x")}) = ${poly([a, b, c])}. What is the ${a > 0 ? "minimum" : "maximum"} value of ${V("f")}(${V("x")})?`,
+          explain: `The vertex is at ${V("x")} = ${MINUS}${V("b")}/(2${V("a")}) = ${MINUS}${paren(b)}/(${2 * a}) = ${num(h)}. Then ${V("f")}(${num(h)}) = ${num(a * h * h)} + ${paren(b * h)} + ${paren(c)} = ${num(k)}. Because ${V("a")} is ${a > 0 ? "positive this is a minimum" : "negative this is a maximum"}.`,
+        }, F(k), [F(h), F(c), F(-k), F(c + a * t * t)]);
+      }
+      if (r < 0.7) {
+        const a = R(1, 6), b = R(2, 4);
+        return numQ({
+          stem: `For the exponential function ${V("f")}(${V("x")}) = ${V("a")}·${V("b")}<sup>${V("x")}</sup>, where ${V("a")} and ${V("b")} are positive constants, ${V("f")}(1) = ${a * b} and ${V("f")}(3) = ${a * b ** 3}. What is the value of ${V("f")}(2)?`,
+          explain: `${V("f")}(3) ÷ ${V("f")}(1) = ${V("b")}<sup>2</sup> = ${a * b ** 3} ÷ ${a * b} = ${b * b}, so ${V("b")} = ${b}. Then ${V("a")} = ${a * b} ÷ ${b} = ${a}, and ${V("f")}(2) = ${a}·${b}<sup>2</sup> = ${a * b * b}.`,
+        }, F(a * b * b), [F((a * b + a * b ** 3) / 2), F(a * b * 2), F(a * b ** 3 - a * b), F(b * b)]);
+      }
+      const b = RNZ(-6, 6), c = RNZ(-9, 9), p = RNZ(-4, 4), q = RNZ(-8, 8), x = RNZ(-3, 4);
+      const u = x - p, v = u * u + b * u + c + q;
+      return numQ({
+        stem: `The function ${V("f")} is defined by ${V("f")}(${V("x")}) = ${poly([1, b, c])}. The function ${V("g")} is defined by ${V("g")}(${V("x")}) = ${V("f")}(${poly([1, -p])}) ${q < 0 ? MINUS : "+"} ${Math.abs(q)}. What is the value of ${V("g")}(${num(x)})?`,
+        explain: `${V("g")}(${num(x)}) = ${V("f")}(${num(x)} ${MINUS} ${paren(p)}) ${q < 0 ? MINUS : "+"} ${Math.abs(q)} = ${V("f")}(${num(u)}) ${q < 0 ? MINUS : "+"} ${Math.abs(q)}. And ${V("f")}(${num(u)}) = ${u * u} + ${paren(b * u)} + ${paren(c)} = ${num(u * u + b * u + c)}. So ${V("g")}(${num(x)}) = ${num(v)}.`,
+      }, F(v), [F((x + p) ** 2 + b * (x + p) + c + q), F(x * x + b * x + c + q), F(u * u + b * u + c - q), F(v - 2 * q)]);
+    },
+  },
+});
+
+</script>
+<script>
+/* ===== Problem-Solving & Data Analysis generators ===== */
+const pctS = (v) => `${+v.toFixed(2)}%`;
+const money = (v) => `$${Number.isInteger(v) ? v.toLocaleString("en-US") : v.toFixed(2)}`;
+function dtable(head, rows, cap) {
+  return `<div class="dt-wrap"><table class="dtable">${cap ? `<caption>${cap}</caption>` : ""}<thead><tr>${head.map((h) => `<th>${h}</th>`).join("")}</tr></thead><tbody>${rows.map((r) => `<tr>${r.map((c, i) => (i === 0 ? `<th scope="row">${c}</th>` : `<td>${c}</td>`)).join("")}</tr>`).join("")}</tbody></table></div>`;
+}
+const sum = (a) => a.reduce((x, y) => x + y, 0);
+const median = (a) => { const s = [...a].sort((x, y) => x - y), n = s.length; return n % 2 ? F(s[(n - 1) / 2]) : F(s[n / 2 - 1] + s[n / 2], 2); };
+const listS = (a) => a.map(num).join(", ");
+const ord = (n) => n + ([, "st", "nd", "rd"][(n % 100 >> 3) ^ 1 && n % 10] || "th");
+
+/* scatterplot with optional line; xs/ys data units, integer grid */
+function scatterSVG(pts, opt) {
+  const { xmax, ymax, xl, yl, line, ystep = 1, xstep = 1, labelEvery = 5, highlight } = opt;
+  const Wd = 360, Ht = 250, L = 44, Rm = 12, T = 12, B = 40;
+  const X = (x) => +(L + (x / xmax) * (Wd - L - Rm)).toFixed(1), Y = (y) => +(T + (1 - y / ymax) * (Ht - T - B)).toFixed(1);
+  let g = "";
+  for (let x = 0; x <= xmax; x += xstep) g += `<line class="gl${x % labelEvery === 0 ? " gl2" : ""}" x1="${X(x)}" x2="${X(x)}" y1="${Y(0)}" y2="${Y(ymax)}"/>`;
+  for (let y = 0; y <= ymax; y += ystep) g += `<line class="gl${y % (ystep * labelEvery) === 0 ? " gl2" : ""}" x1="${X(0)}" x2="${X(xmax)}" y1="${Y(y)}" y2="${Y(y)}"/>`;
+  let lab = "";
+  for (let x = 0; x <= xmax; x += labelEvery * xstep) lab += `<text x="${X(x)}" y="${Y(0) + 14}" text-anchor="middle" class="tk">${x}</text>`;
+  for (let y = 0; y <= ymax; y += labelEvery * ystep) lab += `<text x="${X(0) - 6}" y="${Y(y) + 4}" text-anchor="end" class="tk">${y}</text>`;
+  let ln = "";
+  if (line) { const [m, b] = line; const xa = Math.max(0, m ? (0 - b) / m : 0), xb = Math.min(xmax, m ? (ymax - b) / m : xmax); const x1 = m < 0 ? Math.max(0, (ymax - b) / m) : xa, x2 = m < 0 ? Math.min(xmax, (0 - b) / m) : xb; ln = `<line class="fitln" x1="${X(x1)}" y1="${Y(m * x1 + b)}" x2="${X(x2)}" y2="${Y(m * x2 + b)}"/>`; }
+  const dots = pts.map(([x, y]) => `<circle class="pt${highlight && highlight[0] === x && highlight[1] === y ? " hl" : ""}" cx="${X(x)}" cy="${Y(y)}" r="4"/>`).join("");
+  return `<svg class="fig" viewBox="0 0 ${Wd} ${Ht}" width="${Wd}" role="img" aria-label="Scatterplot of ${yl} against ${xl}">${g}<line class="ax" x1="${X(0)}" x2="${X(xmax)}" y1="${Y(0)}" y2="${Y(0)}"/><line class="ax" x1="${X(0)}" x2="${X(0)}" y1="${Y(0)}" y2="${Y(ymax)}"/>${ln}${dots}${lab}<text x="${(L + Wd - Rm) / 2}" y="${Ht - 6}" text-anchor="middle" class="axl">${xl}</text><text transform="translate(12 ${(T + Ht - B) / 2}) rotate(-90)" text-anchor="middle" class="axl">${yl}</text></svg>`;
+}
+
+Object.assign(GEN, {
+  "psda.ratio": {
+    easy() {
+      if (Math.random() < 0.5) {
+        const b = R(2, 4) * 12, a = R(2, 5), m = R(2, 4), c = b * m;
+        return numQ({
+          stem: `A recipe uses ${a} cups of flour to make ${b} cookies. At this rate, how many cups of flour are needed to make ${c} cookies?`,
+          explain: `${c} cookies is ${c} ÷ ${b} = ${m} times the recipe, so you need ${m} × ${a} = ${a * m} cups. (Or set up a proportion: ${a}/${b} = ${V("x")}/${c}.)`,
+        }, F(a * m), [F(a + m), F(c / a < 100 ? Math.round(c / a) : a * m + 2), F(a * b), F(a * m + 1)]);
+      }
+      const s = R(35, 70), h = R(2, 5), k = R(3, 9), d = s * h;
+      return numQ({
+        stem: `A train travels ${d} miles in ${h} hours at a constant speed. At this speed, how many miles will it travel in ${k} hours?`,
+        explain: `Speed = ${d} ÷ ${h} = ${s} miles per hour. In ${k} hours: ${s} × ${k} = ${s * k} miles.`,
+      }, F(s * k), [F(d * k), F(d + k), F(s * (k - 1)), F(s + k)]);
+    },
+    medium() {
+      if (Math.random() < 0.5) {
+        const q = pick([2, 4]), p = pick(q === 2 ? [3, 5, 7, 9] : [3, 5, 7, 9, 11, 13, 15]), m = q * R(3, 12), inches = p / q;
+        return numQ({
+          stem: `On a map, 1 inch represents ${m} miles. Two towns are ${inches} inches apart on the map. What is the actual distance, in miles, between the towns?`,
+          explain: `Multiply the map distance by the scale: ${inches} × ${m} = ${(m * p) / q} miles.`,
+        }, F(m * p, q), [F(m + p), F(m * Math.floor(inches)), F(Math.round(m / inches)), F((m * p) / q + m)]);
+      }
+      const k = R(1, 4), f = 22 * k, mph = 15 * k;
+      return numQ({
+        stem: `A cyclist rides at a constant speed of ${f} feet per second. What is this speed in miles per hour? (1 mile = 5,280 feet)`,
+        explain: `In one hour (3,600 seconds) the cyclist rides ${f} × 3,600 = ${(f * 3600).toLocaleString("en-US")} feet. Divide by 5,280 feet per mile: ${(f * 3600).toLocaleString("en-US")} ÷ 5,280 = ${mph} miles per hour.`,
+      }, F(mph), [F(f * 60 / 5280 * 60 === mph ? mph + 5 : mph), F(Math.round((f * 5280) / 3600)), F(Math.round((f * 60) / 5280 * 10) || 1), F(mph * 2)]);
+    },
+    hard() {
+      if (Math.random() < 0.55) {
+        let a, b; do { a = R(2, 12); b = R(2, 12); } while (a === b);
+        const t = F(a * b, a + b);
+        return { type: "spr", value: t,
+          stem: `Pump A can fill a tank in ${a} hours. Pump B can fill the same tank in ${b} hours. Working together at these rates, how many hours will it take the two pumps to fill the tank?`,
+          explain: `Add the rates: pump A fills <span class="frac"><span>1</span><span>${a}</span></span> of the tank per hour and pump B fills <span class="frac"><span>1</span><span>${b}</span></span>. Together: <span class="frac"><span>1</span><span>${a}</span></span> + <span class="frac"><span>1</span><span>${b}</span></span> = <span class="frac"><span>${a + b}</span><span>${a * b}</span></span> tank per hour. Time = 1 ÷ rate = ${fHtml(t)} hours.`,
+        };
+      }
+      const d = R(2, 9), s = pick([5, 10, 20]), kg = F(d * s ** 3, 1000);
+      return numQ({
+        stem: `A metal has a density of ${d} grams per cubic centimeter. What is the mass, in kilograms, of a solid cube of this metal with edge length ${s} centimeters? (1 kilogram = 1,000 grams)`,
+        explain: `Volume = ${s}<sup>3</sup> = ${(s ** 3).toLocaleString("en-US")} cubic centimeters. Mass = density × volume = ${d} × ${(s ** 3).toLocaleString("en-US")} = ${(d * s ** 3).toLocaleString("en-US")} grams = ${fHtml(kg)} kilograms.`,
+      }, kg, [F(d * s ** 3), F(d * s * s, 1000), F(d * s * 3, 1000), F(d * s ** 3, 100)]);
+    },
+  },
+
+  "psda.pct": {
+    easy() {
+      const N = R(2, 30) * 20, p = pick([5, 10, 15, 20, 25, 30, 40, 45, 60, 75, 80]), v = (N * p) / 100;
+      if (Math.random() < 0.6) {
+        return numQ({
+          stem: `What is ${p}% of ${N}?`,
+          explain: `${p}% means ${p}/100, so ${p}% of ${N} = ${p / 100} × ${N} = ${v}.`,
+        }, F(v), [F(N - v), F(N * p / 10), F(N + v), F(p)]);
+      }
+      return numQ({
+        stem: `${v} is what percent of ${N}?`,
+        explain: `Divide the part by the whole and multiply by 100: ${v} ÷ ${N} = ${p / 100}, which is ${p}%.`,
+      }, F(p), [F(100 - p), F(Math.round((N / v) * 10)), F(p / 10 < 1 ? p * 2 : p / 5), F(p + 10)]);
+    },
+    medium() {
+      const p = pick([5, 10, 15, 20, 25, 30, 40, 50]);
+      if (Math.random() < 0.5) {
+        const O = R(4, 40) * 20, X = (O * (100 - p)) / 100;
+        return numQ({
+          stem: `After a ${p}% discount, the sale price of a jacket is ${money(X)}. What was the original price, in dollars?`,
+          explain: `The sale price is ${100 - p}% of the original: ${(100 - p) / 100}${V("p")} = ${X}. Divide: ${V("p")} = ${X} ÷ ${(100 - p) / 100} = ${O}. (Adding ${p}% back onto ${X} is a common mistake: the discount was ${p}% of the original price, not of the sale price.)`,
+        }, F(O), [F(Math.round((X * (100 + p)) / 100)), F(X + p), F(Math.round(X * (1 - p / 100))), F(O + 20)]);
+      }
+      const A = R(2, 20) * 20, up = Math.random() < 0.5, B = (A * (100 + (up ? p : -p))) / 100;
+      return numQ({
+        stem: `The number of members in a club changed from ${A} to ${B}. By what percent did the number of members ${up ? "increase" : "decrease"}?`,
+        explain: `Percent change = change ÷ original × 100 = ${Math.abs(B - A)} ÷ ${A} × 100 = ${p}%. Always divide by the original amount (${A}), not the new one.`,
+      }, F(p), [F(Math.abs(B - A)), F(Math.round((Math.abs(B - A) / B) * 100) === p ? p + 5 : Math.round((Math.abs(B - A) / B) * 100)), F(100 - p), F(p * 2)]);
+    },
+    hard() {
+      if (Math.random() < 0.5) {
+        const p = pick([10, 20, 25, 30, 40, 50]), q = pick([10, 20, 25, 30, 40, 50]), v = F((100 + p) * (100 - q), 100);
+        return numQ({
+          stem: `The value of ${V("x")} is ${p}% greater than the value of ${V("y")}, and the value of ${V("y")} is ${q}% less than the value of ${V("z")}. The value of ${V("x")} is what percent of the value of ${V("z")}?`,
+          explain: `Write each change as a multiplier: ${V("x")} = ${(100 + p) / 100}${V("y")} and ${V("y")} = ${(100 - q) / 100}${V("z")}. So ${V("x")} = ${(100 + p) / 100} × ${(100 - q) / 100}${V("z")} = ${fVal(v) / 100}${V("z")}, which is ${fHtml(v)}% of ${V("z")}. You can't just add ${p}% and subtract ${q}%.`,
+        }, v, [F(100 + p - q), F((100 - p) * (100 + q), 100), F(p + q), F(100 - q)]);
+      }
+      const p = pick([10, 20, 30, 40, 50]), d = (p * p) / 100;
+      return numQ({
+        stem: `The price of a stock increased by ${p}% on Monday and then decreased by ${p}% on Tuesday. By what percent did the price decrease over the two days?`,
+        explain: `Multiply the factors: ${(100 + p) / 100} × ${(100 - p) / 100} = ${((100 + p) * (100 - p)) / 10000}. The final price is ${100 - d}% of the original, a decrease of ${d}%. The ${p}% decrease is taken from a bigger number, so it's larger than the ${p}% increase.`,
+      }, F(d), [F(0), F(p), F(p / 2), F(2 * p)]);
+    },
+  },
+
+  "psda.data1": {
+    easy() {
+      const n = pick([5, 6, 7]);
+      if (Math.random() < 0.5) {
+        const m = R(6, 30); let a;
+        do { a = Array.from({ length: n - 1 }, () => R(m - 8, m + 8)); a.push(n * m - sum(a)); } while (a[n - 1] < 0 || Math.abs(a[n - 1] - m) > 12);
+        a = shuffle(a);
+        return numQ({
+          stem: `What is the mean of the data set ${listS(a)}?`,
+          explain: `Add the values (${sum(a)}) and divide by how many there are (${n}): ${sum(a)} ÷ ${n} = ${m}.`,
+        }, F(m), [median(a), F(sum(a)), F(Math.max(...a) - Math.min(...a)), F(m + 1)]);
+      }
+      const odd = n % 2 ? n : n + 1, a = Array.from({ length: odd }, () => R(1, 40));
+      const md = median(a), s = [...a].sort((x, y) => x - y);
+      return numQ({
+        stem: `What is the median of the data set ${listS(a)}?`,
+        explain: `Put the values in order: ${listS(s)}. With ${odd} values, the median is the middle one, the ${ord((odd + 1) / 2)}: ${fHtml(md)}.`,
+      }, md, [F(a[(odd - 1) / 2]), F(sum(a), odd), F(s[(odd - 1) / 2 + 1]), F(s[(odd - 1) / 2 - 1])]);
+    },
+    medium() {
+      if (Math.random() < 0.5) {
+        const label = pick([["Number of pets", "Number of students"], ["Books read", "Number of people"], ["Goals scored", "Number of games"]]);
+        const vals = [0, 1, 2, 3, 4], fr = vals.map(() => R(1, 9));
+        const data = vals.flatMap((v, i) => Array(fr[i]).fill(v)), N = data.length;
+        const askMean = Math.random() < 0.4;
+        const ans = askMean ? F(sum(data), N) : median(data);
+        return { ...(askMean || Math.random() < 0.3 ? { type: "spr", value: ans } : { type: "mcq", ...numericMCQ(ans, [F(2), F(sum(fr), 5), F(Math.max(...fr)), F(vals[fr.indexOf(Math.max(...fr))]), F(sum(data), N)]) }),
+          stem: `${dtable([label[0], label[1]], vals.map((v, i) => [v, fr[i]]))}The table summarizes a data set. What is the ${askMean ? "mean" : "median"} of the data?`,
+          explain: askMean
+            ? `Multiply each value by its frequency and add: ${vals.map((v, i) => `${v}·${fr[i]}`).join(" + ")} = ${sum(data)}. There are ${N} data values, so the mean is ${sum(data)} ÷ ${N} = ${fHtml(ans)}.`
+            : `There are ${N} values in all. ${N % 2 ? `The median is the ${ord((N + 1) / 2)} value` : `The median is the average of the ${ord(N / 2)} and ${ord(N / 2 + 1)} values`}. Counting up the frequencies (${fr.map((f, i) => sum(fr.slice(0, i + 1))).join(", ")} running total), that is ${fHtml(ans)}. The median is a data value (${label[0].toLowerCase()}), not a frequency.`,
+        };
+      }
+      const k = R(3, 6), m = R(10, 40), m2 = m + RNZ(-4, 6), x = (k + 1) * m2 - k * m;
+      return numQ({
+        stem: `The mean of ${k} numbers is ${m}. When a new number is added, the mean of the ${k + 1} numbers is ${m2}. What is the new number?`,
+        explain: `The original total is ${k} × ${m} = ${k * m}. The new total is ${k + 1} × ${m2} = ${(k + 1) * m2}. The new number is the difference: ${(k + 1) * m2} ${MINUS} ${k * m} = ${x}.`,
+      }, F(x), [F(m2), F(2 * m2 - m), F(m2 + (m2 - m) * k / 2 | 0), F(x + k)]);
+    },
+    hard() {
+      if (Math.random() < 0.5) {
+        const n = pick([7, 9]);
+        let a = Array.from({ length: n - 1 }, () => R(10, 30)); a.push(R(70, 99)); a = shuffle(a);
+        const mx = Math.max(...a), b = [...a]; b.splice(b.indexOf(mx), 1);
+        const meanD = fVal(F(sum(b), b.length)) < sum(a) / n ? "decreases" : "stays the same";
+        const mdA = fVal(median(a)), mdB = fVal(median(b));
+        const medD = mdB < mdA ? "decreases" : mdB > mdA ? "increases" : "stays the same";
+        const S = (mn, md) => (mn === md ? `Both the mean and the median ${mn === "stays the same" ? "stay the same" : mn.replace(/s$/, "")}.` : `The mean ${mn}, and the median ${md}.`);
+        const correct = S(meanD, medD);
+        const pool = [S("decreases", "decreases"), S("decreases", "stays the same"), S("stays the same", "decreases"), S("increases", "stays the same"), S("stays the same", "stays the same"), S("decreases", "increases")];
+        return { type: "mcq",
+          stem: `A data set has ${n} values: ${listS(a)}. If the value ${mx} is removed, which statement best describes how the mean and median change?`,
+          explain: `${mx} is far above the other values, so removing it pulls the mean down a lot (from about ${(sum(a) / n).toFixed(1)} to about ${(sum(b) / b.length).toFixed(1)}). The median only depends on the middle values: it goes from ${+mdA.toFixed(2)} to ${+mdB.toFixed(2)}, so it ${medD}. ${correct}`,
+          ...textMCQ(correct, shuffle(pool)) };
+      }
+      const m = R(20, 60), s1 = [1, 2], s2 = [8, 12];
+      const A = [m - s1[1], m - s1[0], m, m + s1[0], m + s1[1]], B = [m - s2[1], m - s2[0], m, m + s2[0], m + s2[1]];
+      const swap = Math.random() < 0.5, [dA, dB] = swap ? [B, A] : [A, B];
+      const wide = swap ? "Data set A" : "Data set B";
+      return { type: "mcq",
+        stem: `${dtable(["Data set", "Values"], [["A", listS(shuffle(dA))], ["B", listS(shuffle(dB))]])}Both data sets have a mean of ${m}. Which statement about their standard deviations is true?`,
+        explain: `Standard deviation measures how spread out the values are from the mean. The values in ${wide} are much farther from ${m} (as far as ${s2[1]} away, compared with ${s1[1]}), so ${wide} has the larger standard deviation. You don't need to calculate it.`,
+        ...textMCQ(`${wide} has the larger standard deviation.`, [`${wide === "Data set A" ? "Data set B" : "Data set A"} has the larger standard deviation.`, "The standard deviations are equal because the means are equal.", "The standard deviations can't be compared without more information."]) };
+    },
+  },
+
+  "psda.data2": {
+    easy() {
+      const m2 = pick([3, 4, 5, 6, 7, 8]), m = m2 / 2, b = R(2, 10);
+      const pts = []; for (let x = 1; x <= 10; x++) pts.push([x, Math.max(0, Math.round(m * x + b + R(-2, 2)))]);
+      const ymax = Math.ceil((m * 10 + b + 4) / 5) * 5, k = 2 * R(2, 5), v = F(m2 * k + 2 * b, 2);
+      return numQ({
+        stem: `${scatterSVG(pts, { xmax: 10, ymax, xl: "x", yl: "y", line: [m, b], labelEvery: 5 })}<p>The scatterplot shows ${pts.length} data points and the line of best fit ${V("y")} = ${m}${V("x")} + ${b}. Based on the line of best fit, what is the predicted value of ${V("y")} when ${V("x")} = ${k}?</p>`,
+        explain: `Substitute ${V("x")} = ${k} into the line's equation: ${V("y")} = ${m}(${k}) + ${b} = ${m * k} + ${b} = ${fHtml(v)}. A prediction comes from the line, not from a data point.`,
+      }, v, [F(Math.round(m * k)), F(pts[k - 1][1] === fVal(v) ? fVal(v) + 2 : pts[k - 1][1]), F(m * k + b + m2), F(k + b)]);
+    },
+    medium() {
+      const ctx = pick([
+        { xl: "Hours studied", yl: "Test score", m: pick([3.5, 4.2, 5.5]), b: R(40, 52), xmax: 8, unit: (m) => `${m} points`, sx: "hour studied", subj: "the test score", dir: "increase" },
+        { xl: "Temperature (°C)", yl: "Drinks sold", m: pick([2.5, 3.4, 4.5]), b: R(5, 20), xmax: 30, unit: (m) => `${m} drinks`, sx: "degree Celsius", subj: "the number of drinks sold", dir: "increase" },
+        { xl: "Age of car (years)", yl: "Value (thousand $)", m: -pick([1.2, 1.5, 1.8, 2.2]), b: R(24, 32), xmax: 12, unit: (m) => `${m} thousand dollars`, sx: "year of age", subj: "the predicted value of the car", dir: "decrease" },
+      ]);
+      const { m, b, xmax } = ctx, n = 10, pts = [];
+      for (let i = 0; i < n; i++) { const x = R(1, xmax - 1); pts.push([x, Math.max(1, Math.round(m * x + b + R(-3, 3)))]); }
+      const ymax = Math.ceil((Math.max(...pts.map((p) => p[1]), m > 0 ? m * xmax + b : b) + 3) / 10) * 10;
+      const am = Math.abs(m);
+      const correct = `For each additional ${ctx.sx}, ${ctx.subj} is predicted to ${ctx.dir} by about ${ctx.unit(am)}.`;
+      return { type: "mcq",
+        stem: `${scatterSVG(pts, { xmax, ymax, xl: ctx.xl, yl: ctx.yl, line: [m, b], xstep: xmax > 15 ? 2 : 1, ystep: ymax > 60 ? 5 : 2, labelEvery: ymax > 60 ? 4 : 5 })}<p>The line of best fit for the data is ${V("y")} = ${m < 0 ? `${MINUS}${am}` : am}${V("x")} + ${b}. Which is the best interpretation of ${am} in this context?</p>`,
+        explain: `${am} is the slope of the line: the change in predicted ${ctx.yl.toLowerCase()} for each 1-unit increase in ${ctx.xl.toLowerCase().replace(/ \(.*\)/, "")}. ${m < 0 ? "The slope is negative, so the prediction goes down. " : ""}${correct} (${b} is the ${V("y")}-intercept, the predicted value when ${V("x")} = 0.)`,
+        ...textMCQ(correct, [`${ctx.subj[0].toUpperCase() + ctx.subj.slice(1)} is predicted to be ${ctx.unit(am)} when ${V("x")} = 0.`, `For each additional ${ctx.sx}, ${ctx.subj} is predicted to ${ctx.dir === "increase" ? "decrease" : "increase"} by about ${ctx.unit(am)}.`, `Every data point is exactly ${ctx.unit(am)} from the line of best fit.`]) };
+    },
+    hard() {
+      if (Math.random() < 0.5) {
+        const m = pick([0.5, 1, 1.5, 2]), b = R(1, 4);
+        const xs = shuffle([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]).slice(0, 8).sort((p, q) => p - q);
+        const pts = xs.map((x) => [x, Math.max(0, Math.round(m * x + b) + RNZ(-3, 3))]);
+        const evens = pts.filter(([x]) => x % 2 === 0 || m % 1 === 0);
+        const hp = pick(evens), pred = m * hp[0] + b, res = hp[1] - pred;
+        const ymax = Math.ceil((Math.max(...pts.map((p) => p[1]), m * 10 + b) + 1) / 5) * 5;
+        return numQ({
+          stem: `${scatterSVG(pts, { xmax: 10, ymax, xl: "x", yl: "y", line: [m, b], labelEvery: 5, highlight: hp })}<p>The scatterplot shows a data set and its line of best fit, ${V("y")} = ${m === 1 ? "" : m}${V("x")} + ${b}. For the highlighted data point, at ${V("x")} = ${hp[0]}, what is the actual ${V("y")}-value minus the ${V("y")}-value predicted by the line?</p>`,
+          explain: `The highlighted point is (${hp[0]}, ${hp[1]}). The line predicts ${V("y")} = ${m}(${hp[0]}) + ${b} = ${pred}. Actual minus predicted: ${hp[1]} ${MINUS} ${pred} = ${num(res)}. ${res > 0 ? "The point is above the line." : "The point is below the line."}`,
+        }, F(res), [F(-res), F(hp[1]), F(pred), F(res + (res > 0 ? 1 : -1))]);
+      }
+      const exp = Math.random() < 0.5, inc = Math.random() < 0.5;
+      const a = exp ? (inc ? R(2, 6) : pick([162, 243, 324, 405])) : R(10, 60), r = exp ? (inc ? pick([2, 3]) : 3) : RNZ(3, 9) * (inc ? 1 : -1);
+      const ys = [0, 1, 2, 3, 4].map((x) => (exp ? (inc ? a * r ** x : a / r ** x) : a + r * x));
+      const correct = `${inc ? "Increasing" : "Decreasing"} ${exp ? "exponential" : "linear"}`;
+      return { type: "mcq",
+        stem: `${dtable([V("x"), V("y")], [0, 1, 2, 3, 4].map((x, i) => [x, ys[i].toLocaleString("en-US")]))}Which of the following best describes the relationship between ${V("x")} and ${V("y")} in the table?`,
+        explain: exp
+          ? `Check the ratios: each ${V("y")}-value is ${inc ? `${r} times` : `1/${r} of`} the one before. A constant ratio (multiplying by the same number) means exponential. ${correct}.`
+          : `Check the differences: each ${V("y")}-value is ${Math.abs(r)} ${inc ? "more" : "less"} than the one before. A constant difference (adding the same number) means linear. ${correct}.`,
+        ...textMCQ(correct, ["Increasing linear", "Decreasing linear", "Increasing exponential", "Decreasing exponential"].filter((s) => s !== correct)) };
+    },
+  },
+
+  "psda.prob": {
+    easy() {
+      const r = R(2, 12), b = R(2, 12), g = R(2, 12), n = r + b + g;
+      const pickC = pick([["red", r], ["blue", b], ["green", g]]), notQ = Math.random() < 0.3;
+      const v = F(notQ ? n - pickC[1] : pickC[1], n);
+      return numQ({
+        stem: `A bag contains ${r} red marbles, ${b} blue marbles, and ${g} green marbles. If one marble is chosen at random, what is the probability that it is ${notQ ? "not " : ""}${pickC[0]}?`,
+        explain: `There are ${n} marbles in all, and ${notQ ? n - pickC[1] : pickC[1]} of them are ${notQ ? "not " : ""}${pickC[0]}. Probability = favorable ÷ total = ${notQ ? n - pickC[1] : pickC[1]}/${n}${v.d !== n ? ` = ${fHtml(v)}` : ""}.`,
+      }, v, [F(pickC[1], n - pickC[1]), F(notQ ? pickC[1] : n - pickC[1], n), F(1, 3), F(pickC[1], n + 1)], 0.25);
+    },
+    medium() { return twoWay(false); },
+    hard() { return twoWay(true); },
+  },
+
+  "psda.infer": {
+    easy() {
+      const n = pick([50, 80, 100, 120, 200, 250]), k = R(Math.round(n * 0.15), Math.round(n * 0.7)), N = n * R(5, 40);
+      const who = pick([["students at a high school", "said they walk to school", "students at the school"], ["residents of a town", "said they support a new park", "residents of the town"], ["customers of a store", "said they would buy a new snack", "regular customers of the store"]]);
+      const est = (k * N) / n;
+      return numQ({
+        stem: `A random sample of ${n} ${who[0]} was surveyed, and ${k} of them ${who[1]}. There are ${N.toLocaleString("en-US")} ${who[2]} in total. Based on the survey, about how many of them would be expected to say this?`,
+        explain: `In the sample, ${k}/${n} = ${+(k / n).toFixed(4)} of people said yes. Because the sample was random, apply the same fraction to everyone: ${+(k / n).toFixed(4)} × ${N.toLocaleString("en-US")} = ${est.toLocaleString("en-US")}.`,
+      }, F(est), [F(k), F(N - est), F(Math.round(N / k)), F(est + n)], 0.2);
+    },
+    medium() {
+      const p = R(30, 70), moe = R(2, 5);
+      const inside = p + RNZ(-(moe - 1), moe - 1) * (Math.random() < 0.3 ? 0 : 1) || p + 1;
+      const outs = shuffle([p - moe - R(2, 6), p + moe + R(2, 6), p - moe - R(7, 12), p + moe + R(7, 12)]).slice(0, 3);
+      const what = pick(["of voters in a city support a ballot measure", "of adults in a state exercise at least three times a week", "of students at a university live on campus"]);
+      const opts = [inside, ...outs].sort((x, y) => x - y).map((v) => `${v}%`);
+      return { type: "mcq", choices: opts, answer: opts.indexOf(`${inside}%`),
+        stem: `Based on a random sample, researchers estimate that ${p}% ${what}, with a margin of error of ${moe}%. Which of the following is a plausible value for the true percentage?`,
+        explain: `The margin of error gives a range of plausible values: ${p}% ± ${moe}%, or ${p - moe}% to ${p + moe}%. Only ${inside}% falls inside that range.`,
+      };
+    },
+    hard() {
+      const t = R(0, 2);
+      if (t === 0) {
+        const n = pick([200, 300, 400, 500]);
+        return { type: "mcq",
+          stem: `A survey of a random sample of ${n} people produced an estimate with a margin of error of ${R(4, 6)}%. Which change to the survey would most likely produce a smaller margin of error?`,
+          explain: `Larger random samples give more precise estimates, so the margin of error shrinks as the sample size grows. Changing the confidence level to a higher one, or sampling less, makes it bigger; a nonrandom sample doesn't fix precision and adds bias.`,
+          ...textMCQ(`Survey a random sample of ${n * 4} people instead.`, [`Survey a random sample of ${n / 2} people instead.`, `Survey ${n} volunteers who respond to an online ad.`, `Report the result with a higher confidence level.`]) };
+      }
+      if (t === 1) {
+        const grp = pick([["members of a gym", "adults in the city"], ["students in one math class", "students at the school"], ["shoppers at one mall", "residents of the state"]]);
+        return { type: "mcq",
+          stem: `To estimate a typical number of hours of sleep, a researcher surveyed a random sample of ${grp[0]}. Which conclusion is most appropriate?`,
+          explain: `A random sample represents only the group it was drawn from. The results can be generalized to all ${grp[0]}, but not to ${grp[1]}, who may differ from them.`,
+          ...textMCQ(`The results can be generalized to all ${grp[0]}, but not to all ${grp[1]}.`, [`The results can be generalized to all ${grp[1]}.`, `The results can't be generalized to anyone, because it was only a sample.`, `The results apply only to the specific people who were surveyed.`]) };
+      }
+      const nA = pick([100, 200, 300]), nB = nA * 4;
+      return { type: "mcq",
+        stem: `Two researchers estimated the same population mean using random samples. Researcher A used a sample of ${nA} and Researcher B used a sample of ${nB}. Which statement is most likely true?`,
+        explain: `With random sampling, a bigger sample gives a more precise estimate. Researcher B's sample is four times as large, so B's margin of error is most likely smaller (about half as big).`,
+        ...textMCQ(`Researcher B's estimate has a smaller margin of error.`, [`Researcher A's estimate has a smaller margin of error.`, `The two estimates have the same margin of error.`, `Researcher B's estimate must equal the true mean exactly.`]) };
+    },
+  },
+
+  "psda.claims": {
+    easy() { return claim(pick([0, 2])); },
+    medium() { return claim(pick([1, 2, 3])); },
+    hard() { return claim(R(0, 3)); },
+  },
+});
+
+/* two-way table probability */
+function twoWay(hard) {
+  const ctx = pick([
+    { rows: ["10th grade", "11th grade"], cols: ["Soccer", "Basketball", "Tennis"], what: "students were asked which sport they prefer", unit: "student" },
+    { rows: ["Under 30", "30 or older"], cols: ["Email", "Text", "Phone"], what: "adults were asked how they prefer to be contacted", unit: "adult" },
+    { rows: ["Morning", "Evening"], cols: ["Passed", "Did not pass"], what: "drivers' test results were recorded by time of day", unit: "driver" },
+  ]);
+  const cells = ctx.rows.map(() => ctx.cols.map(() => R(5, 40)));
+  const rowT = cells.map(sum), colT = ctx.cols.map((_, j) => sum(cells.map((r) => r[j]))), N = sum(rowT);
+  const table = dtable(["", ...ctx.cols, "Total"], [...ctx.rows.map((r, i) => [r, ...cells[i], rowT[i]]), ["Total", ...colT, N]]);
+  const i = R(0, 1), j = R(0, ctx.cols.length - 1), c = cells[i][j];
+  let v, q, ex;
+  if (!hard) {
+    if (Math.random() < 0.5) { v = F(colT[j], N); q = `If one of these ${ctx.unit}s is chosen at random, what is the probability that the ${ctx.unit} is in the "${ctx.cols[j]}" column?`; ex = `Use the grand total. ${colT[j]} of the ${N} ${ctx.unit}s are in "${ctx.cols[j]}", so the probability is ${colT[j]}/${N}${v.d !== N ? ` = ${fHtml(v)}` : ""}.`; }
+    else { v = F(c, rowT[i]); q = `If a ${ctx.unit} in the "${ctx.rows[i]}" row is chosen at random, what is the probability that the ${ctx.unit} is also in the "${ctx.cols[j]}" column?`; ex = `"Chosen from the ${ctx.rows[i]} row" means only that row counts: the total is ${rowT[i]}, not ${N}. ${c} of those ${rowT[i]} are in "${ctx.cols[j]}", so the probability is ${c}/${rowT[i]}${v.d !== rowT[i] ? ` = ${fHtml(v)}` : ""}.`; }
+  } else {
+    if (Math.random() < 0.5) { v = F(c, colT[j]); q = `If a ${ctx.unit} in the "${ctx.cols[j]}" column is chosen at random, what is the probability that the ${ctx.unit} is in the "${ctx.rows[i]}" row?`; ex = `Restrict to the "${ctx.cols[j]}" column: ${colT[j]} ${ctx.unit}s. ${c} of them are "${ctx.rows[i]}", so the probability is ${c}/${colT[j]}${v.d !== colT[j] ? ` = ${fHtml(v)}` : ""}. Watch which total goes in the denominator.`; }
+    else { const notC = rowT[i] - c; v = F(notC, rowT[i]); q = `If a ${ctx.unit} in the "${ctx.rows[i]}" row is chosen at random, what is the probability that the ${ctx.unit} is <em>not</em> in the "${ctx.cols[j]}" column?`; ex = `In the "${ctx.rows[i]}" row there are ${rowT[i]} ${ctx.unit}s, and ${c} are in "${ctx.cols[j]}". So ${rowT[i]} ${MINUS} ${c} = ${notC} are not, and the probability is ${notC}/${rowT[i]}${v.d !== rowT[i] ? ` = ${fHtml(v)}` : ""}.`; }
+  }
+  return numQ({ stem: `${table}<p>In a survey, ${N} ${ctx.what}. The results are shown in the table.</p><p>${q}</p>`, explain: ex },
+    v, [F(c, N), F(c, colT[j]), F(c, rowT[i]), F(colT[j], N), F(rowT[i], N), F(rowT[i] - c, N)], 0.3);
+}
+
+/* observational study vs experiment */
+function claim(kind) {
+  const c = pick([
+    { pop: "adults in a large city", t: "taking a daily vitamin D supplement", eff: "reduces the number of colds", assoc: "is associated with having fewer colds", out: "the number of colds over the winter" },
+    { pop: "high school students in a state", t: "using a flashcard app for 15 minutes a day", eff: "improves vocabulary test scores", assoc: "is associated with higher vocabulary test scores", out: "vocabulary test scores" },
+    { pop: "office workers at a large company", t: "using a standing desk", eff: "reduces back pain", assoc: "is associated with less back pain", out: "reported back pain" },
+  ]);
+  const randSample = kind === 0 || kind === 2, randAssign = kind === 0 || kind === 1;
+  const sel = randSample ? `selected a random sample of 400 ${c.pop}` : `recruited 400 volunteers from among ${c.pop}`;
+  const asg = randAssign ? `randomly assigned half of them to start ${c.t}, while the other half did not` : `asked each participant whether they were ${c.t}`;
+  const opts = [
+    `${c.t[0].toUpperCase() + c.t.slice(1)} ${c.eff} for ${c.pop}.`,
+    `${c.t[0].toUpperCase() + c.t.slice(1)} ${c.eff} for people like the volunteers, but the result may not apply to all ${c.pop}.`,
+    `${c.t[0].toUpperCase() + c.t.slice(1)} ${c.assoc} among ${c.pop}, but it can't be concluded that it causes the difference.`,
+    `${c.t[0].toUpperCase() + c.t.slice(1)} ${c.assoc} among the participants, but this can't be shown to cause the difference or be generalized to all ${c.pop}.`,
+  ];
+  const why = [
+    "The participants were a random sample, so results generalize to the population, and the treatment was randomly assigned, so cause and effect can be concluded.",
+    "Random assignment allows a cause-and-effect conclusion, but volunteers aren't a random sample, so the result can't be generalized to the whole population.",
+    "The random sample lets you generalize to the population, but participants weren't randomly assigned (it's an observational study), so only an association can be concluded, not cause.",
+    "Without random assignment there's no cause-and-effect conclusion, and without random sampling the association can't be generalized beyond the participants.",
+  ];
+  return { type: "mcq",
+    stem: `Researchers ${sel}. They ${asg}, and they compared ${c.out} for the two groups. Those ${c.t} had significantly better results. Which conclusion is most appropriate?`,
+    explain: `Two questions decide it. Was there random <em>sampling</em> from the population? ${randSample ? "Yes" : "No"}. Was the treatment <em>randomly assigned</em>? ${randAssign ? "Yes" : "No"}. ${why[kind]}`,
+    ...textMCQ(opts[kind], opts.filter((_, k) => k !== kind)) };
+}
+
+</script>
+<script>
+/* ===== Geometry & Trigonometry generators ===== */
+const DEG = "°";
+const piH = (k) => (fEq(k, F(1)) ? "π" : `${fHtml(k)}π`);
+const svgFig = (w, h, inner, label) => `<svg class="fig" viewBox="0 0 ${w} ${h}" width="${w}" role="img" aria-label="${label}">${inner}</svg>`;
+const tx = (x, y, s, anchor = "middle", cls = "lbl") => `<text x="${x.toFixed(1)}" y="${y.toFixed(1)}" text-anchor="${anchor}" class="${cls}">${s}</text>`;
+const vI = (s) => `<tspan font-style="italic">${s}</tspan>`;
+const TRIPLES = [[3, 4, 5], [5, 12, 13], [8, 15, 17], [7, 24, 25], [20, 21, 29], [9, 40, 41]];
+
+/* right triangle: right angle at C (bottom-left), A bottom-right, B top-left */
+function rightTriSVG(a, b, labels) {
+  const maxW = 230, maxH = 150, s = Math.min(maxW / b, maxH / a);
+  const C = [50, +(30 + a * s).toFixed(1)], A = [+(50 + b * s).toFixed(1), +(30 + a * s).toFixed(1)], B = [50, 30];
+  const q = 12;
+  let g = `<polygon class="shape" points="${C} ${A} ${B}"/><polyline class="shape thin" points="${C[0]},${C[1] - q} ${C[0] + q},${C[1] - q} ${C[0] + q},${C[1]}"/>`;
+  g += tx(C[0] - 10, C[1] + 16, vI("C")) + tx(A[0] + 10, A[1] + 16, vI("A")) + tx(B[0] - 10, B[1] - 6, vI("B"));
+  if (labels.b) g += tx((C[0] + A[0]) / 2, C[1] + 20, labels.b);
+  if (labels.a) g += tx(C[0] - 10, (C[1] + B[1]) / 2 + 4, labels.a, "end");
+  if (labels.c) g += tx((A[0] + B[0]) / 2 + 12, (A[1] + B[1]) / 2 - 8, labels.c, "start");
+  return svgFig(Math.max(330, A[0] + 40), C[1] + 30, g, "Right triangle ABC with the right angle at C");
+}
+
+/* triangle with three angle labels */
+function triAngleSVG(labels) {
+  const A = [40, 180], B = [300, 180], C = [190, 30];
+  let g = `<polygon class="shape" points="${A} ${B} ${C}"/>`;
+  g += tx(A[0] + 34, A[1] - 10, labels[0]) + tx(B[0] - 32, B[1] - 10, labels[1]) + tx(C[0] - 2, C[1] + 34, labels[2]);
+  return svgFig(340, 200, g, "Triangle with its three interior angles labeled");
+}
+
+/* two parallel lines cut by a transversal; labels: {pos: text} at intersection 0 (top) or 1 */
+function parallelSVG(lab) {
+  const y1 = 80, y2 = 170, P = (y) => [+(140 + ((240 - y) / 240) * 190).toFixed(1), y];
+  const top = P(y1), bot = P(y2);
+  const off = { UR: [0.9, -0.43], UL: [-0.44, -0.9], LL: [-0.9, 0.43], LR: [0.44, 0.9] };
+  const svgSafe = (s) => s.replace(/<i>(.*?)<\/i>/g, '<tspan font-style="italic">$1</tspan>');
+  let g = `<line class="shape" x1="20" y1="${y1}" x2="440" y2="${y1}"/><line class="shape" x1="20" y1="${y2}" x2="440" y2="${y2}"/><line class="shape" x1="${P(240)[0]}" y1="240" x2="${P(0)[0]}" y2="0"/>`;
+  g += tx(448, y1 + 5, vI("ℓ"), "start") + tx(448, y2 + 5, vI("m"), "start");
+  for (const [key, text] of Object.entries(lab)) {
+    const [which, pos] = key.split("."), p = which === "0" ? top : bot, o = off[pos];
+    const anchor = o[0] > 0.2 ? "start" : o[0] < -0.2 ? "end" : "middle";
+    g += tx(p[0] + o[0] * 30, p[1] + o[1] * 24 + 5, svgSafe(text), anchor);
+  }
+  return svgFig(470, 240, g, "Parallel lines l and m cut by a transversal");
+}
+
+/* triangle ABC with DE parallel to BC */
+function similarSVG(t, lab) {
+  const A = [170, 20], B = [30, 200], C = [330, 200];
+  const D = [A[0] + t * (B[0] - A[0]), A[1] + t * (B[1] - A[1])].map((v) => +v.toFixed(1)), E = [A[0] + t * (C[0] - A[0]), A[1] + t * (C[1] - A[1])].map((v) => +v.toFixed(1));
+  let g = `<polygon class="shape" points="${A} ${B} ${C}"/><line class="shape" x1="${D[0]}" y1="${D[1]}" x2="${E[0]}" y2="${E[1]}"/>`;
+  g += tx(A[0], A[1] - 6, vI("A")) + tx(B[0] - 10, B[1] + 14, vI("B")) + tx(C[0] + 10, C[1] + 14, vI("C")) + tx(D[0] - 12, D[1] + 4, vI("D"), "end") + tx(E[0] + 12, E[1] + 4, vI("E"), "start");
+  g += tx((A[0] + D[0]) / 2 - 12, (A[1] + D[1]) / 2, lab.AD, "end") + tx((D[0] + B[0]) / 2 - 12, (D[1] + B[1]) / 2, lab.DB, "end");
+  g += tx((D[0] + E[0]) / 2, D[1] - 7, lab.DE) + tx((B[0] + C[0]) / 2, B[1] + 20, lab.BC);
+  return svgFig(380, 230, g, "Triangle ABC with segment DE parallel to BC");
+}
+
+Object.assign(GEN, {
+  "geo.area": {
+    easy() {
+      if (Math.random() < 0.5) {
+        const l = R(5, 30), w = R(2, l - 1), P = 2 * (l + w);
+        return numQ({
+          stem: `A rectangle has a perimeter of ${P} centimeters and a length of ${l} centimeters. What is the width of the rectangle, in centimeters?`,
+          explain: `Perimeter = 2(length + width), so ${P} = 2(${l} + ${V("w")}). Divide by 2: ${P / 2} = ${l} + ${V("w")}, so ${V("w")} = ${w}.`,
+        }, F(w), [F(P - l), F(P / 2), F(P - 2 * l), F(P / l > 1 ? Math.round(P / l) : 1)]);
+      }
+      const l = R(2, 12), w = R(2, 10), h = R(2, 9), V0 = l * w * h;
+      return numQ({
+        stem: `A rectangular box has a length of ${l} inches, a width of ${w} inches, and a height of ${h} inches. What is the volume of the box, in cubic inches?`,
+        explain: `Volume of a rectangular prism = length × width × height = ${l} × ${w} × ${h} = ${V0}.`,
+      }, F(V0), [F(l + w + h), F(2 * (l * w + w * h + l * h)), F(l * w), F(V0 + l * w)]);
+    },
+    medium() {
+      const r = Math.random();
+      if (r < 0.4) {
+        const rad = R(2, 9), h = R(2, 12), k = rad * rad * h;
+        return numQ({
+          stem: `A right circular cylinder has a radius of ${rad} meters and a height of ${h} meters. The volume of the cylinder is ${V("k")}π cubic meters. What is the value of ${V("k")}?`,
+          explain: `Volume of a cylinder = π${V("r")}<sup>2</sup>${V("h")} = π(${rad})<sup>2</sup>(${h}) = ${k}π. So ${V("k")} = ${k}.`,
+        }, F(k), [F(2 * rad * h), F(rad * h), F(rad * rad), F(2 * rad * rad * h)]);
+      }
+      if (r < 0.7) {
+        const f = pick([2, 3, 4, 5]), what = pick(["volume", "surface area"]), mult = what === "volume" ? f ** 3 : f * f;
+        return numQ({
+          stem: `The edge length of a cube is multiplied by ${f}. The ${what} of the new cube is how many times the ${what} of the original cube?`,
+          explain: `When every length is multiplied by ${f}, areas are multiplied by ${f}<sup>2</sup> = ${f * f} and volumes by ${f}<sup>3</sup> = ${f ** 3}. ${what === "volume" ? "Volume" : "Surface area"} is ${what === "volume" ? "three-dimensional" : "an area"}, so the answer is ${mult}.`,
+        }, F(mult), [F(f), F(what === "volume" ? f * f : f ** 3), F(3 * f), F(6 * f)]);
+      }
+      const b = R(4, 20), h = R(3, 16), A0 = F(b * h, 2);
+      return numQ({
+        stem: `A triangle has a base of ${b} feet and a height of ${h} feet. What is the area of the triangle, in square feet?`,
+        explain: `Area of a triangle = <span class="frac"><span>1</span><span>2</span></span> × base × height = <span class="frac"><span>1</span><span>2</span></span> × ${b} × ${h} = ${fHtml(A0)}.`,
+      }, A0, [F(b * h), F(b + h), F(2 * (b + h)), F(b * h, 3)]);
+    },
+    hard() {
+      const r = Math.random();
+      if (r < 0.35) {
+        let rad, h; do { rad = R(2, 9); h = R(2, 15); } while ((rad * rad * h) % 3 !== 0);
+        const k = (rad * rad * h) / 3;
+        return numQ({
+          stem: `A right circular cone has a radius of ${rad} centimeters and a height of ${h} centimeters. Its volume is ${V("k")}π cubic centimeters. What is the value of ${V("k")}?`,
+          explain: `Volume of a cone = <span class="frac"><span>1</span><span>3</span></span>π${V("r")}<sup>2</sup>${V("h")} = <span class="frac"><span>1</span><span>3</span></span>π(${rad * rad})(${h}) = ${k}π. (It's on the reference sheet.)`,
+        }, F(k), [F(rad * rad * h), F((rad * h) / 3 % 1 === 0 ? (rad * h) / 3 : rad * h), F(2 * k), F(k + rad)]);
+      }
+      if (r < 0.7) {
+        const p = R(1, 3), q = p + R(1, 2), Vs = (p ** 3) * R(2, 9) * (q % 2 === 0 ? 1 : 1);
+        const Vl = F(Vs * q ** 3, p ** 3);
+        return numQ({
+          stem: `Two solids are similar. The ratio of their corresponding edge lengths is ${p}:${q}. The volume of the smaller solid is ${Vs} cubic units. What is the volume of the larger solid, in cubic units?`,
+          explain: `For similar solids, volumes scale by the cube of the length ratio: (${q}/${p})<sup>3</sup> = ${q ** 3}/${p ** 3}. So the larger volume is ${Vs} × ${q ** 3}/${p ** 3} = ${fHtml(Vl)}.`,
+        }, Vl, [F(Vs * q, p), F(Vs * q * q, p * p), F(Vs * q ** 3), F(Vs + q - p)]);
+      }
+      const rad = R(2, 12), k = 4 * rad * rad;
+      return numQ({
+        stem: `The surface area of a sphere with radius ${rad} inches is ${V("k")}π square inches. What is the value of ${V("k")}? (The surface area of a sphere is 4π${V("r")}<sup>2</sup>.)`,
+        explain: `Surface area = 4π${V("r")}<sup>2</sup> = 4π(${rad})<sup>2</sup> = ${k}π, so ${V("k")} = ${k}.`,
+      }, F(k), [F(rad * rad), F(2 * rad * rad), F(F(4 * rad ** 3, 3).d === 1 ? (4 * rad ** 3) / 3 : 8 * rad), F(4 * rad)]);
+    },
+  },
+
+  "geo.lines": {
+    easy() {
+      const a = R(25, 85), b = R(25, 150 - a), c = 180 - a - b;
+      const k = R(0, 2), labs = [a, b, c].map((v, i) => (i === k ? `${vI("x")}${DEG}` : `${v}${DEG}`));
+      return numQ({
+        stem: `${triAngleSVG(labs)}<p>In the triangle shown, what is the value of ${V("x")}?</p>`,
+        explain: `The angles of a triangle add up to 180${DEG}. ${V("x")} = 180 ${MINUS} ${[a, b, c].filter((_, i) => i !== k).join(` ${MINUS} `)} = ${[a, b, c][k]}.`,
+      }, F([a, b, c][k]), [F(360 - [a, b, c].filter((_, i) => i !== k).reduce((x, y) => x + y)), F(90 - Math.min(...[a, b, c].filter((_, i) => i !== k)) > 0 ? 90 - Math.min(...[a, b, c].filter((_, i) => i !== k)) : 45), F(180 - [a, b, c].filter((_, i) => i !== k)[0]), F([a, b, c][k] + 10)]);
+    },
+    medium() {
+      const theta = R(40, 80), pos = ["UR", "UL", "LL", "LR"];
+      const acute = (p) => p === "UR" || p === "LL";
+      let pA, pB; do { pA = pick(pos); pB = pick(pos); } while (false);
+      const val = (p) => (acute(p) ? theta : 180 - theta);
+      const equal = acute(pA) === acute(pB);
+      // angle A = (a x + b), angle B = (c x + d)
+      const x = R(5, 25), a = R(2, 5);
+      const bA = val(pA) - a * x;
+      let c; do { c = R(1, 6); } while (c === a && equal);
+      const dB = val(pB) - c * x;
+      const exA = `(${expr([[a, "x"], [bA, ""]])})${DEG}`, exB = `(${expr([[c, "x"], [dB, ""]])})${DEG}`;
+      const lab = { [`0.${pA}`]: exA, [`1.${pB}`]: exB };
+      return numQ({
+        stem: `${parallelSVG(lab)}<p>In the figure, line ${V("ℓ")} is parallel to line ${V("m")}. What is the value of ${V("x")}?</p>`,
+        explain: equal
+          ? `The two marked angles are in matching positions (one is a corresponding or alternate angle of the other), so they are equal: ${expr([[a, "x"], [bA, ""]])} = ${expr([[c, "x"], [dB, ""]])}. Solving gives ${V("x")} = ${x}. Check: both angles measure ${val(pA)}${DEG}.`
+          : `One marked angle is acute and the other is obtuse, so they are supplementary (they add to 180${DEG}): (${expr([[a, "x"], [bA, ""]])}) + (${expr([[c, "x"], [dB, ""]])}) = 180. Solving gives ${V("x")} = ${x}. Check: ${val(pA)}${DEG} + ${val(pB)}${DEG} = 180${DEG}.`,
+      }, F(x), [F(equal ? Math.round((180 - bA - dB) / (a + c)) : (a !== c ? (dB - bA) / (a - c) : x + 5)), F(val(pA)), F(x + 10), F(180 - val(pA) === x ? x + 3 : 180 - val(pA))].map((f) => (isFinite(fVal(f)) ? f : F(x + 7))));
+    },
+    hard() {
+      if (Math.random() < 0.6) {
+        const p = R(2, 6), q = R(1, 6), k = R(2, 5), AD = p * k, DB = q * k, DE = R(3, 12) * (p);
+        const BC = F(DE * (p + q), p), t = p / (p + q);
+        return numQ({
+          stem: `${similarSVG(t, { AD: String(AD), DB: String(DB), DE: String(DE), BC: vI("x") })}<p>In triangle ${V("ABC")}, segment ${V("DE")} is parallel to ${V("BC")}. ${V("AD")} = ${AD}, ${V("DB")} = ${DB}, and ${V("DE")} = ${DE}. What is the value of ${V("x")}, the length of ${V("BC")}?</p>`,
+          explain: `Because ${V("DE")} ∥ ${V("BC")}, triangle ${V("ADE")} is similar to triangle ${V("ABC")}. ${V("AB")} = ${AD} + ${DB} = ${AD + DB}, so the scale factor is ${AD + DB}/${AD}. Then ${V("x")} = ${DE} × ${AD + DB}/${AD} = ${fHtml(BC)}. (Using ${DB} instead of the whole side ${AD + DB} is the usual trap.)`,
+        }, BC, [F(DE * DB, AD), F(DE + DB), F(DE * AD, DB), F(DE * 2)]);
+      }
+      const apex = 2 * R(10, 70), base = (180 - apex) / 2, ext = 180 - base;
+      return numQ({
+        stem: `In isosceles triangle ${V("PQR")}, ${V("PQ")} = ${V("PR")} and the measure of angle ${V("P")} is ${apex}${DEG}. Side ${V("QR")} is extended past ${V("R")} to point ${V("S")}. What is the measure, in degrees, of angle ${V("PRS")}?`,
+        explain: `The base angles of an isosceles triangle are equal: (180 ${MINUS} ${apex}) ÷ 2 = ${base}${DEG} each. Angle ${V("PRS")} forms a straight line with angle ${V("PRQ")}, so it is 180 ${MINUS} ${base} = ${ext}${DEG}. (Also: an exterior angle equals the sum of the two far interior angles, ${apex} + ${base} = ${ext}.)`,
+      }, F(ext), [F(base), F(180 - apex), F(apex), F(apex + 2 * base === 180 ? 2 * base : 90)]);
+    },
+  },
+
+  "geo.trig": {
+    easy() {
+      const [p, q, h] = pick(TRIPLES.slice(0, 4)), k = R(1, 4), a = p * k, b = q * k, c = h * k;
+      const findHyp = Math.random() < 0.5, swap = Math.random() < 0.5;
+      const [va, vb] = swap ? [b, a] : [a, b];
+      if (findHyp) {
+        return numQ({
+          stem: `${rightTriSVG(va, vb, { a: String(va), b: String(vb), c: vI("x") })}<p>In right triangle ${V("ABC")}, what is the value of ${V("x")}?</p>`,
+          explain: `Pythagorean theorem: ${V("x")}<sup>2</sup> = ${va}<sup>2</sup> + ${vb}<sup>2</sup> = ${va * va} + ${vb * vb} = ${c * c}, so ${V("x")} = ${c}.`,
+        }, F(c), [F(va + vb), F(Math.abs(vb - va) || 1), F(c * c), F(c + 1)]);
+      }
+      return numQ({
+        stem: `${rightTriSVG(va, vb, { a: vI("x"), b: String(vb), c: String(c) })}<p>In right triangle ${V("ABC")}, what is the value of ${V("x")}?</p>`,
+        explain: `Pythagorean theorem with the hypotenuse ${c}: ${V("x")}<sup>2</sup> + ${vb}<sup>2</sup> = ${c}<sup>2</sup>, so ${V("x")}<sup>2</sup> = ${c * c} ${MINUS} ${vb * vb} = ${va * va} and ${V("x")} = ${va}.`,
+      }, F(va), [F(c - vb), F(c + vb), F(vb), F(va * va)]);
+    },
+    medium() {
+      const [p, q, h] = pick(TRIPLES), swap = Math.random() < 0.5, [a, b] = swap ? [q, p] : [p, q];
+      // a = BC (opposite A), b = AC (adjacent to A), c = AB
+      const fn = pick(["sin", "cos", "tan"]), ang = pick(["A", "B"]);
+      const opp = ang === "A" ? a : b, adj = ang === "A" ? b : a;
+      const val = { sin: F(opp, h), cos: F(adj, h), tan: F(opp, adj) }[fn];
+      const other = [F(opp, h), F(adj, h), F(opp, adj), F(adj, opp), F(h, opp)];
+      return numQ({
+        stem: `${rightTriSVG(a, b, { a: String(a), b: String(b), c: String(h) })}<p>In right triangle ${V("ABC")}, what is the value of ${fn}(${V(ang)})?</p>`,
+        explain: `From angle ${V(ang)}, the opposite side is ${opp}, the adjacent side is ${adj}, and the hypotenuse is ${h}. ${fn === "sin" ? "Sine = opposite/hypotenuse" : fn === "cos" ? "Cosine = adjacent/hypotenuse" : "Tangent = opposite/adjacent"} = ${fHtml(val)}. (SOH-CAH-TOA)`,
+      }, val, other, 0.25);
+    },
+    hard() {
+      const r = Math.random();
+      if (r < 0.35) {
+        const [p, q, h] = pick(TRIPLES), f = pick(["sin", "cos"]);
+        return numQ({
+          stem: `In right triangle ${V("ABC")}, angle ${V("C")} is a right angle and ${f}(${V("A")}) = <span class="frac"><span>${p}</span><span>${h}</span></span>. What is the value of ${f === "sin" ? "cos" : "sin"}(${V("B")})?`,
+          explain: `Angles ${V("A")} and ${V("B")} are complementary (they add to 90${DEG}). The side opposite ${V("A")} is the side adjacent to ${V("B")}, so ${f === "sin" ? "sin(A) = cos(B)" : "cos(A) = sin(B)"}. The answer is <span class="frac"><span>${p}</span><span>${h}</span></span>.`,
+        }, F(p, h), [F(q, h), F(p, q), F(q, p), F(h, p)], 0.3);
+      }
+      if (r < 0.7) {
+        const k = R(2, 12), kind = pick(["30", "45"]);
+        if (kind === "30") {
+          const ask = pick(["short", "long"]), hyp = 2 * k;
+          const correct = ask === "short" ? String(k) : `${k}${sqrtH(3)}`;
+          return { type: "mcq",
+            stem: `In right triangle ${V("PQR")}, the measure of angle ${V("Q")} is 90${DEG}, the measure of angle ${V("P")} is 30${DEG}, and ${V("PR")} = ${hyp}. What is the length of ${ask === "short" ? V("QR") : V("PQ")}?`,
+            explain: `This is a 30${DEG}-60${DEG}-90${DEG} triangle, with sides in the ratio 1 : ${sqrtH(3)} : 2 (reference sheet). The hypotenuse ${V("PR")} = ${hyp} = 2(${k}). The side opposite the 30${DEG} angle (${V("QR")}) is ${k}, and the side opposite the 60${DEG} angle (${V("PQ")}) is ${k}${sqrtH(3)}.`,
+            ...textMCQ(correct, ask === "short" ? [`${k}${sqrtH(3)}`, String(hyp), `${k}${sqrtH(2)}`] : [String(k), `${hyp}${sqrtH(3)}`, `${k}${sqrtH(2)}`]) };
+        }
+        return { type: "mcq",
+          stem: `An isosceles right triangle has legs of length ${k}. What is the length of its hypotenuse?`,
+          explain: `In a 45${DEG}-45${DEG}-90${DEG} triangle, the hypotenuse is ${sqrtH(2)} times a leg: ${k}${sqrtH(2)}.`,
+          ...textMCQ(`${k}${sqrtH(2)}`, [String(2 * k), `${k}${sqrtH(3)}`, `${2 * k}${sqrtH(2)}`]) };
+      }
+      const d = pick([30, 45, 60, 120, 135, 150, 210, 225, 240, 270, 300, 315]), rad = F(d, 180);
+      if (Math.random() < 0.5) {
+        return numQ({
+          stem: `What is the measure, in degrees, of an angle of ${piH(rad)} radians?`,
+          explain: `π radians = 180${DEG}, so multiply by 180/π: ${piH(rad)} × 180/π = ${d}${DEG}.`,
+        }, F(d), [F(Math.round(fVal(rad) * 360)), F(Math.round(fVal(rad) * 90)), F(360 - d), F(180 - d === 0 ? 90 : Math.abs(180 - d))]);
+      }
+      return { type: "mcq",
+        stem: `An angle measures ${d}${DEG}. What is its measure in radians?`,
+        explain: `180${DEG} = π radians, so multiply by π/180: ${d} × π/180 = ${piH(rad)}.`,
+        ...textMCQ(piH(rad), [piH(F(d, 360)), piH(F(d, 90)), piH(F(2 * d, 180)).replace(/^(.*)$/, (m) => (m === piH(rad) ? piH(F(d + 30, 180)) : m))]) };
+    },
+  },
+
+  "geo.circ": {
+    easy() {
+      const rad = R(2, 15), area = Math.random() < 0.5, useD = Math.random() < 0.4;
+      const k = area ? rad * rad : 2 * rad;
+      return numQ({
+        stem: `A circle has a ${useD ? "diameter" : "radius"} of ${useD ? 2 * rad : rad} units. Its ${area ? "area" : "circumference"} is ${V("k")}π ${area ? "square units" : "units"}. What is the value of ${V("k")}?`,
+        explain: `${useD ? `The radius is half the diameter: ${rad}. ` : ""}${area ? `Area = π${V("r")}<sup>2</sup> = π(${rad})<sup>2</sup> = ${k}π.` : `Circumference = 2π${V("r")} = 2π(${rad}) = ${k}π.`} So ${V("k")} = ${k}.`,
+      }, F(k), [F(area ? 2 * rad : rad * rad), F(area ? 4 * rad * rad : 4 * rad), F(rad), F(area && useD ? 4 * rad * rad + 1 : k + 2)]);
+    },
+    medium() {
+      const h = RNZ(-8, 8), k = RNZ(-8, 8), r = R(2, 12);
+      const eq = `(${poly([1, -h])})<sup>2</sup> + (${poly([1, -k], "y")})<sup>2</sup> = ${r * r}`;
+      if (Math.random() < 0.5) {
+        return numQ({
+          stem: `In the ${V("xy")}-plane, the graph of ${eq} is a circle. What is the radius of the circle?`,
+          explain: `In the form (${V("x")} ${MINUS} ${V("h")})<sup>2</sup> + (${V("y")} ${MINUS} ${V("k")})<sup>2</sup> = ${V("r")}<sup>2</sup>, the right side is ${V("r")}<sup>2</sup>. So ${V("r")}<sup>2</sup> = ${r * r} and ${V("r")} = ${r}.`,
+        }, F(r), [F(r * r), F(r * r / 2 % 1 === 0 ? r * r / 2 : r + 2), F(2 * r), F(Math.abs(h) + Math.abs(k))]);
+      }
+      const ctr = `(${num(h)}, ${num(k)})`;
+      return { type: "mcq",
+        stem: `In the ${V("xy")}-plane, the graph of ${eq} is a circle. What are the coordinates of its center?`,
+        explain: `The center (${V("h")}, ${V("k")}) comes from (${V("x")} ${MINUS} ${V("h")}) and (${V("y")} ${MINUS} ${V("k")}): the signs flip. So the center is ${ctr}.`,
+        ...textMCQ(ctr, [`(${num(-h)}, ${num(-k)})`, `(${num(h)}, ${num(-k)})`, `(${num(-h)}, ${num(k)})`]) };
+    },
+    hard() {
+      if (Math.random() < 0.5) {
+        const h = RNZ(-6, 6), k = RNZ(-6, 6), r = R(2, 9), D = -2 * h, E = -2 * k, Fc = h * h + k * k - r * r;
+        return numQ({
+          stem: `In the ${V("xy")}-plane, the graph of ${V("x")}<sup>2</sup> ${D < 0 ? MINUS : "+"} ${Math.abs(D)}${V("x")} + ${V("y")}<sup>2</sup> ${E < 0 ? MINUS : "+"} ${Math.abs(E)}${V("y")} ${Fc < 0 ? MINUS : "+"} ${Math.abs(Fc)} = 0 is a circle. What is the radius of the circle?`,
+          explain: `Complete the square for ${V("x")} and ${V("y")}: add ${h * h} and ${k * k} to both sides. (${poly([1, -h])})<sup>2</sup> + (${poly([1, -k], "y")})<sup>2</sup> = ${num(-Fc)} + ${h * h} + ${k * k} = ${r * r}. So ${V("r")} = ${r}.`,
+        }, F(r), [F(r * r), F(Math.abs(Fc) <= 0 ? r + 1 : Math.abs(Fc)), F(r + 1), F(Math.round(Math.sqrt(Math.abs(Fc))) || 2)]);
+      }
+      const ang = pick([30, 40, 45, 60, 72, 90, 120, 135, 150]), rad = R(2, 12), arc = Math.random() < 0.5;
+      const k = arc ? F(ang * 2 * rad, 360) : F(ang * rad * rad, 360);
+      return numQ({
+        stem: `A circle has a radius of ${rad} centimeters. A central angle of ${ang}${DEG} cuts off ${arc ? "an arc" : "a sector"}. The ${arc ? "arc length" : "area of the sector"} is ${V("k")}π ${arc ? "centimeters" : "square centimeters"}. What is the value of ${V("k")}?`,
+        explain: `The ${arc ? "arc" : "sector"} is ${ang}/360 of the whole circle. ${arc ? `Whole circumference = 2π(${rad}) = ${2 * rad}π` : `Whole area = π(${rad})<sup>2</sup> = ${rad * rad}π`}, so ${V("k")} = ${ang}/360 × ${arc ? 2 * rad : rad * rad} = ${fHtml(k)}.`,
+      }, k, [F(arc ? rad * rad * ang : 2 * rad * ang, 360), F(ang * rad, 180), F(arc ? 2 * rad : rad * rad), F(ang, 360)]);
+    },
+  },
+});
+
+</script>
+<script>
+/* ===== UI ===== */
+const KEY = "satmath.v1";
+const $ = (id) => document.getElementById(id);
+const LETTERS = ["A", "B", "C", "D"];
+const PACE = 95; // seconds per question on the real test (35 min / 22)
+const READY = DOMAINS.filter((d) => d.ready);
+const SHARE = { alg: 0.35, adv: 0.35, psda: 0.15, geo: 0.15 };
+
+/* ---------- storage ---------- */
+function blankProgress() {
+  const p = { skills: {}, level: {}, run: {}, recent: [], streak: 0, best: 0, history: [], rating: {}, settings: { topic: "mix", diff: "auto" } };
+  for (const s of SKILLS) { p.skills[s.id] = { a: 0, c: 0, t: 0 }; p.level[s.id] = 0; p.run[s.id] = 0; }
+  for (const d of DOMAINS) p.rating[d.id] = { r: 500, n: 0 };
+  return p;
+}
+function load() {
+  try {
+    const raw = localStorage.getItem(KEY);
+    if (raw) {
+      const p = JSON.parse(raw), b = blankProgress();
+      const m = { ...b, ...p };
+      for (const k of ["skills", "level", "run", "rating", "settings"]) m[k] = { ...b[k], ...(p[k] || {}) };
+      if (!Array.isArray(m.history)) m.history = [];
+      m.best = Math.max(m.best || 0, m.streak || 0);
+      return m;
+    }
+  } catch (e) { /* storage unavailable */ }
+  return blankProgress();
+}
+function save() { try { localStorage.setItem(KEY, JSON.stringify(P)); } catch (e) { /* ignore */ } }
+
+let P = load();
+let Q = null, selected = null, answered = false, started = 0, tick = null, view = "practice";
+
+/* ---------- score estimate ----------
+   Each domain keeps an Elo-style rating on the 200–800 scale. Question difficulty is placed
+   at the centre of its Skills Insight score range; the chance of a correct answer follows a
+   logistic curve. Rough by design: it only sees the topics the app covers. */
+const QD = { easy: 430, medium: 540, hard: 660 }, SCALE = 70;
+const BANDS = [[200, 360, "1", "200–360"], [370, 410, "2", "370–410"], [420, 460, "3", "420–460"], [470, 540, "4", "470–540"], [550, 600, "5", "550–600"], [610, 670, "6", "610–670"], [680, 800, "7", "680–800"]];
+const round10 = (x) => Math.round(x / 10) * 10;
+const clampS = (x) => Math.max(200, Math.min(800, x));
+function updateRating(domain, diff, ok) {
+  const g = P.rating[domain];
+  const p = 1 / (1 + Math.exp(-(g.r - QD[diff]) / SCALE));
+  const K = Math.max(16, 80 / Math.sqrt(1 + g.n / 5));
+  g.r = clampS(g.r + K * ((ok ? 1 : 0) - p)); g.n++;
+}
+function estimate() {
+  const doms = READY.filter((d) => P.rating[d.id].n > 0);
+  const N = doms.reduce((x, d) => x + P.rating[d.id].n, 0);
+  if (N < 10) return { ready: false, need: 10 - N };
+  let w = 0, sum = 0;
+  for (const d of doms) { const g = P.rating[d.id], wt = SHARE[d.id] * (g.n / (g.n + 5)); w += wt; sum += wt * g.r; }
+  const score = clampS(round10(sum / w)), half = round10(Math.max(30, 180 / Math.sqrt(N)));
+  const band = BANDS.find((b) => score >= b[0] && score <= b[1]) || BANDS[0];
+  const covered = doms.map((d) => d.name);
+  return { ready: true, score, lo: clampS(score - half), hi: clampS(score + half), band, N, covered };
+}
+
+/* ---------- choose next question ---------- */
+function pool() {
+  const t = P.settings.topic;
+  if (t === "mix") return SKILLS;
+  if (t.startsWith("dom:")) return SKILLS.filter((s) => s.domain === t.slice(4));
+  return SKILLS.filter((s) => s.id === t);
+}
+function chooseSkill() {
+  const list = pool();
+  if (list.length === 1) return list[0].id;
+  // Weight toward weaker skills; unseen skills count as 50%.
+  const w = list.map((s) => { const k = P.skills[s.id]; return 1 + 3 * (1 - (k.c + 1) / (k.a + 2)); });
+  let r = Math.random() * w.reduce((x, y) => x + y, 0);
+  for (let i = 0; i < list.length; i++) { r -= w[i]; if (r <= 0) return list[i].id; }
+  return list[0].id;
+}
+const chooseDiff = (skill) => (P.settings.diff === "auto" ? DIFFS[P.level[skill]] : P.settings.diff);
+
+function nextQuestion() {
+  const skill = chooseSkill();
+  Q = generate(skill, chooseDiff(skill));
+  selected = null; answered = false;
+  renderQuestion();
+  started = Date.now();
+  clearInterval(tick); tick = setInterval(updateTimer, 1000); updateTimer();
+}
+
+/* ---------- controls ---------- */
+function chip(attr, val, label, on) { return `<button class="chip" type="button" data-${attr}="${val}" aria-pressed="${on}">${label}</button>`; }
+function renderControls() {
+  const t = P.settings.topic;
+  let h = `<div class="group"><span class="row-label">Topic</span><div class="row">${chip("topic", "mix", "Mixed (focus on weak spots)", t === "mix")}${READY.map((d) => chip("topic", "dom:" + d.id, { alg: "All Algebra", adv: "All Advanced Math", psda: "All Data Analysis", geo: "All Geometry" }[d.id], t === "dom:" + d.id)).join("")}</div></div>`;
+  const SHORT = { alg: "Algebra", adv: "Advanced", psda: "Data", geo: "Geometry" };
+  for (const d of READY) h += `<div class="group"><span class="row-label">${SHORT[d.id]}</span><div class="row">${d.skills.map((s) => chip("topic", s.id, s.short, t === s.id)).join("")}</div></div>`;
+  $("topics").innerHTML = h;
+  $("diffs").innerHTML = ["auto", ...DIFFS].map((d) => chip("diff", d, d === "auto" ? "Auto (adapts to you)" : d[0].toUpperCase() + d.slice(1), P.settings.diff === d)).join("");
+}
+document.addEventListener("click", (e) => {
+  const t = e.target.closest("[data-topic]"), d = e.target.closest("[data-diff]");
+  if (t) { P.settings.topic = t.dataset.topic; save(); renderControls(); nextQuestion(); }
+  if (d) { P.settings.diff = d.dataset.diff; save(); renderControls(); nextQuestion(); }
+});
+
+/* ---------- question card ---------- */
+const skillOf = (id) => SKILLS.find((s) => s.id === id);
+function renderQuestion() {
+  const body = Q.type === "mcq"
+    ? `<div class="choices" role="group" aria-label="Answer choices">${Q.choices.map((c, i) => `<button class="choice" type="button" data-choice="${i}" aria-pressed="false"><span class="letter">${LETTERS[i]}</span><span>${c}</span></button>`).join("")}</div>`
+    : `<div class="spr"><label for="spr-input">Type your answer (fraction or decimal)</label><input id="spr-input" autocomplete="off" inputmode="text" spellcheck="false" placeholder="e.g. 3/2 or 1.5"><div class="hint" id="spr-hint">Up to 5 characters, or 6 if negative.</div></div>`;
+  $("qcard").innerHTML = `
+    <div class="qmeta"><span class="tag">${skillOf(Q.skill).name}</span><span class="dot-sep">/</span><span>${Q.type === "mcq" ? "Multiple choice" : "Student-produced response"}</span><span class="pill ${Q.diff}">${Q.diff}</span><span class="timer" id="timer">0:00</span></div>
+    <div class="stem">${Q.stem}</div>
+    ${body}
+    <div class="actions"><button class="btn primary" id="check-btn" type="button" ${Q.type === "mcq" ? "disabled" : ""}>Check answer</button><button class="btn ghost" id="skip-btn" type="button">Skip</button><span class="kbd">${Q.type === "mcq" ? "<kbd>A</kbd>–<kbd>D</kbd> pick · <kbd>Enter</kbd> check" : "<kbd>Enter</kbd> check"}</span></div>
+    <div id="fb"></div>`;
+  if (Q.type === "spr") {
+    const inp = $("spr-input");
+    inp.addEventListener("input", () => { const h = $("spr-hint"); const v = inp.value.trim(); if (!v) { h.className = "hint"; h.textContent = "Up to 5 characters, or 6 if negative."; return; } const r = checkSPR(v, Q.value); h.className = r.valid ? "hint" : "hint err"; h.textContent = r.valid ? "Looks like a valid entry." : r.msg; });
+    if (view === "practice") setTimeout(() => inp.focus({ preventScroll: true }), 0);
+  }
+  $("check-btn").addEventListener("click", check);
+  $("skip-btn").addEventListener("click", nextQuestion);
+  $("qcard").querySelectorAll("[data-choice]").forEach((b) => b.addEventListener("click", () => pickChoice(+b.dataset.choice)));
+}
+function pickChoice(i) {
+  if (answered || Q.type !== "mcq") return;
+  selected = i;
+  $("qcard").querySelectorAll("[data-choice]").forEach((b) => b.setAttribute("aria-pressed", String(+b.dataset.choice === i)));
+  $("check-btn").disabled = false;
+}
+const mmss = (s) => `${Math.floor(s / 60)}:${String(Math.round(s) % 60).padStart(2, "0")}`;
+function updateTimer() {
+  const el = $("timer"); if (!el) return;
+  const s = Math.floor((Date.now() - started) / 1000);
+  el.textContent = mmss(s);
+  el.classList.toggle("slow", s > PACE);
+  el.title = s > PACE ? "Slower than real-test pace (about 1:35 per question)" : "Real-test pace is about 1:35 per question";
+}
+
+function check() {
+  if (answered) return;
+  let ok;
+  if (Q.type === "mcq") { if (selected === null) return; ok = selected === Q.answer; }
+  else {
+    const r = checkSPR($("spr-input").value, Q.value);
+    if (!r.valid) { const h = $("spr-hint"); h.className = "hint err"; h.textContent = r.msg; return; }
+    ok = r.ok;
+  }
+  answered = true; clearInterval(tick);
+  const secs = Math.round((Date.now() - started) / 1000);
+  record(ok, secs);
+
+  if (Q.type === "mcq") {
+    $("qcard").querySelectorAll("[data-choice]").forEach((b) => { const i = +b.dataset.choice; b.disabled = true; if (i === Q.answer) b.classList.add("right"); else if (i === selected) b.classList.add("wrong"); });
+  } else { $("spr-input").disabled = true; }
+  const acc = Q.type === "spr" ? `<div class="accepted">Accepted answers: ${acceptedForms(Q.value).join("  ·  ")}</div>` : "";
+  const head = ok ? "Correct" : Q.type === "mcq" ? `Not quite. The answer is ${LETTERS[Q.answer]}.` : "Not quite.";
+  $("fb").innerHTML = `<div class="feedback ${ok ? "ok" : "no"}"><strong>${head}</strong>${acc}<div class="explain">${Q.explain}</div><div class="kbd">Time: ${mmss(secs)}</div></div>`;
+  const btn = $("check-btn"); btn.textContent = "Next question →";
+  const kb = $("qcard").querySelector(".kbd"); if (kb) kb.innerHTML = "<kbd>Enter</kbd> next";
+  btn.disabled = false; btn.removeEventListener("click", check); btn.addEventListener("click", nextQuestion);
+  $("skip-btn").remove();
+  btn.focus({ preventScroll: true });
+  renderProgress();
+}
+
+function record(ok, secs) {
+  const sk = skillOf(Q.skill), k = P.skills[Q.skill];
+  k.a++; k.t += secs; if (ok) k.c++;
+  P.streak = ok ? P.streak + 1 : 0; P.best = Math.max(P.best, P.streak);
+  P.recent = [...P.recent, ok ? 1 : 0].slice(-20);
+  // Auto difficulty: 2 right in a row at a level moves up; a miss moves down.
+  if (ok) { P.run[Q.skill]++; if (P.run[Q.skill] >= 2 && P.level[Q.skill] < 2) { P.level[Q.skill]++; P.run[Q.skill] = 0; } }
+  else { P.run[Q.skill] = 0; if (P.level[Q.skill] > 0) P.level[Q.skill]--; }
+  updateRating(sk.domain, Q.diff, ok);
+  const e = estimate();
+  P.history.push({ s: Q.skill, d: Q.diff, ok: ok ? 1 : 0, t: secs, ts: Date.now(), e: e.ready ? e.score : null });
+  if (P.history.length > 3000) P.history = P.history.slice(-3000);
+  save();
+}
+
+/* ---------- progress rail ---------- */
+function estBlock(e, big) {
+  if (!e.ready) return `<div class="est est-empty"><span class="est-label">Estimated SAT Math</span><div class="est-num">–</div><div class="est-note">Answer ${e.need} more question${e.need === 1 ? "" : "s"} to see your estimate.</div></div>`;
+  const pos = (v) => ((v - 200) / 600) * 100;
+  return `<div class="est"${big ? ' style="border:none;padding:0;margin:0"' : ""}><span class="est-label">Estimated SAT Math</span>
+    <div class="est-num">${e.score}<small>${e.lo}–${e.hi}</small></div>
+    <div class="meter" role="img" aria-label="Estimated score ${e.score} on a 200 to 800 scale"><div class="rng" style="left:${pos(e.lo)}%;width:${pos(e.hi) - pos(e.lo)}%"></div><div class="pt" style="left:calc(${pos(e.score)}% - 1px)"></div></div>
+    <div class="meter-scale"><span>200</span><span>500</span><span>800</span></div>
+    <div class="est-note">Skills Insight band ${e.band[2]} (${e.band[3]}). ${e.covered.length === DOMAINS.length ? "Covers all four test areas." : `Based on ${e.covered.join(", ").replace(/, ([^,]*)$/, " and $1")} only.`}</div></div>`;
+}
+function renderProgress() {
+  const all = Object.values(P.skills), a = all.reduce((x, k) => x + k.a, 0), c = all.reduce((x, k) => x + k.c, 0);
+  $("est-side").innerHTML = estBlock(estimate(), false);
+  $("st-total").textContent = a; $("st-acc").textContent = a ? Math.round((100 * c) / a) + "%" : "–"; $("st-streak").textContent = P.streak;
+  $("recent").innerHTML = P.recent.map((r) => `<span class="${r ? "ok" : ""}" title="${r ? "Correct" : "Missed"}"></span>`).join("");
+  $("skills").innerHTML = SKILLS.map((s) => {
+    const k = P.skills[s.id], pct = k.a ? Math.round((100 * k.c) / k.a) : 0;
+    const cls = !k.a ? "" : pct < 50 ? "low" : pct < 80 ? "mid" : "high";
+    return `<div><div class="sk-top"><span>${s.name}</span><span>${k.a ? `${k.c}/${k.a} · ${pct}%` : "not started"}</span></div><div class="bar ${cls}"><div style="width:${pct}%"></div></div><div class="lvl">Auto level: ${DIFFS[P.level[s.id]]}${k.a ? ` · avg ${Math.round(k.t / k.a)}s` : ""}</div></div>`;
+  }).join("");
+  const tried = SKILLS.filter((s) => P.skills[s.id].a >= 3);
+  if (!a) $("focus").textContent = "Answer a few questions and this will point out your weakest topic.";
+  else if (!tried.length) $("focus").textContent = "Keep going. After 3 questions in a topic you'll see where to focus.";
+  else { const w = tried.reduce((m, s) => (P.skills[s.id].c / P.skills[s.id].a < P.skills[m.id].c / P.skills[m.id].a ? s : m)); $("focus").innerHTML = `<b>Focus next:</b> ${w.name} (${Math.round((100 * P.skills[w.id].c) / P.skills[w.id].a)}% so far).`; }
+  if (view === "stats") renderStats();
+}
+$("reset-btn").addEventListener("click", () => $("reset-confirm").classList.add("show"));
+$("reset-no").addEventListener("click", () => $("reset-confirm").classList.remove("show"));
+$("reset-yes").addEventListener("click", () => { const s = P.settings; P = blankProgress(); P.settings = s; save(); $("reset-confirm").classList.remove("show"); renderProgress(); });
+
+/* ---------- stats view ---------- */
+function trendChart(pts) {
+  // pts: [{i, e}] estimate after question i. Fixed 200–800 axis so progress isn't exaggerated.
+  const W = 640, H = 180, L = 34, Rr = 8, T = 10, B = 22;
+  const n = pts.length, x0 = pts[0].i, x1 = pts[n - 1].i;
+  const X = (i) => L + (x1 === x0 ? (W - L - Rr) / 2 : ((i - x0) / (x1 - x0)) * (W - L - Rr));
+  const Y = (v) => T + (1 - (v - 200) / 600) * (H - T - B);
+  const line = pts.map((p, k) => `${k ? "L" : "M"}${X(p.i).toFixed(1)},${Y(p.e).toFixed(1)}`).join("");
+  const area = `${line}L${X(x1).toFixed(1)},${Y(200)}L${X(x0).toFixed(1)},${Y(200)}Z`;
+  const grid = [200, 400, 600, 800].map((v) => `<line class="grid" x1="${L}" x2="${W - Rr}" y1="${Y(v)}" y2="${Y(v)}"/><text class="ax" x="${L - 6}" y="${Y(v) + 3}" text-anchor="end">${v}</text>`).join("");
+  const last = pts[n - 1];
+  return `<div class="chart-wrap" id="trend"><svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" role="img" aria-label="Estimated score after each question, latest ${last.e}">
+    ${grid}<path class="area" d="${area}"/><path class="ln" d="${line}" vector-effect="non-scaling-stroke"/>
+    <text class="ax" x="${L}" y="${H - 6}">Q${x0}</text><text class="ax" x="${W - Rr}" y="${H - 6}" text-anchor="end">Q${x1}</text>
+    <line class="cross" id="tr-x" y1="${T}" y2="${H - B}" visibility="hidden" vector-effect="non-scaling-stroke"/>
+    <circle class="dot" id="tr-d" r="4" cx="${X(last.i)}" cy="${Y(last.e)}"/>
+    <rect id="tr-hit" x="${L}" y="0" width="${W - L - Rr}" height="${H}" fill="transparent"/></svg>
+    <div class="tip" id="tr-tip" hidden></div></div>`;
+}
+function wireTrend(pts) {
+  const wrap = $("trend"); if (!wrap) return;
+  const svg = wrap.querySelector("svg"), hit = $("tr-hit"), tip = $("tr-tip"), xl = $("tr-x"), dot = $("tr-d");
+  const W = 640, H = 180, L = 34, Rr = 8, T = 10, B = 22, x0 = pts[0].i, x1 = pts[pts.length - 1].i;
+  const X = (i) => L + (x1 === x0 ? (W - L - Rr) / 2 : ((i - x0) / (x1 - x0)) * (W - L - Rr));
+  const Y = (v) => T + (1 - (v - 200) / 600) * (H - T - B);
+  const show = (p) => {
+    xl.setAttribute("x1", X(p.i)); xl.setAttribute("x2", X(p.i)); xl.setAttribute("visibility", "visible");
+    dot.setAttribute("cx", X(p.i)); dot.setAttribute("cy", Y(p.e));
+    const r = svg.getBoundingClientRect(); tip.hidden = false;
+    tip.style.left = (X(p.i) / W) * r.width + "px"; tip.style.top = (Y(p.e) / H) * r.height + "px";
+    tip.textContent = `Question ${p.i} · est. ${p.e}`;
+  };
+  const reset = () => { const p = pts[pts.length - 1]; xl.setAttribute("visibility", "hidden"); tip.hidden = true; dot.setAttribute("cx", X(p.i)); dot.setAttribute("cy", Y(p.e)); };
+  hit.addEventListener("pointermove", (ev) => {
+    const r = svg.getBoundingClientRect(), vx = ((ev.clientX - r.left) / r.width) * W;
+    let best = pts[0]; for (const p of pts) if (Math.abs(X(p.i) - vx) < Math.abs(X(best.i) - vx)) best = p;
+    show(best);
+  });
+  hit.addEventListener("pointerleave", reset);
+}
+function bar(pct) { const cls = pct < 50 ? "low" : pct < 80 ? "mid" : "high"; return `<div class="bar ${cls}" style="margin:0"><div style="width:${pct}%"></div></div>`; }
+function renderStats() {
+  const H = P.history, e = estimate();
+  const all = Object.values(P.skills), a = all.reduce((x, k) => x + k.a, 0), c = all.reduce((x, k) => x + k.c, 0), t = all.reduce((x, k) => x + k.t, 0);
+  const avg = a ? t / a : 0;
+  const pts = H.map((h, k) => ({ i: k + 1, e: h.e })).filter((p) => p.e !== null);
+  const byD = DIFFS.map((d) => { const r = H.filter((h) => h.d === d); return { d, n: r.length, c: r.filter((h) => h.ok).length }; });
+  const rows = READY.map((d) => {
+    const g = P.rating[d.id], ks = d.skills.map((s) => ({ s, k: P.skills[s.id] }));
+    const da = ks.reduce((x, o) => x + o.k.a, 0), dc = ks.reduce((x, o) => x + o.k.c, 0);
+    const head = `<tr class="domrow"><td>${d.name}</td><td class="num">${da}</td><td class="num">${da ? Math.round((100 * dc) / da) + "%" : "–"}</td><td class="barcell">${da ? bar(Math.round((100 * dc) / da)) : ""}</td><td class="num">${g.n >= 5 ? "~" + round10(g.r) : "–"}</td><td class="num"></td></tr>`;
+    return head + ks.map(({ s, k }) => { const pct = k.a ? Math.round((100 * k.c) / k.a) : 0; return `<tr><td>${s.name}</td><td class="num">${k.a}</td><td class="num">${k.a ? pct + "%" : "–"}</td><td class="barcell">${k.a ? bar(pct) : ""}</td><td class="num">${k.a ? mmss(k.t / k.a) : "–"}</td><td class="num">${DIFFS[P.level[s.id]]}</td></tr>`; }).join("");
+  }).join("");
+  $("view-stats").innerHTML = `
+    <div class="tiles">
+      <div><span>Questions answered</span><b>${a}</b><em>${H.length < a ? `${H.length} with full detail` : "all time"}</em></div>
+      <div><span>Accuracy</span><b>${a ? Math.round((100 * c) / a) + "%" : "–"}</b><em>${c} correct</em></div>
+      <div><span>Avg time per question</span><b>${a ? mmss(avg) : "–"}</b><em>${a ? (avg <= PACE ? "within" : "slower than") + " real-test pace (1:35)" : "real-test pace is 1:35"}</em></div>
+      <div><span>Best streak</span><b>${P.best}</b><em>current ${P.streak}</em></div>
+    </div>
+    <section class="panel card">
+      <h2>Score estimate</h2>
+      <p class="cap">A rough guess at the SAT Math score you're practising at, worked out from which questions you get right and how hard they are. Each test area is weighted by its share of the real test (Algebra and Advanced Math about 35% each, Data Analysis and Geometry about 15% each). Practice questions aren't the real test, so check it against an official Bluebook practice test.</p>
+      <div class="hero-est"><div>${estBlock(e, true)}</div>${pts.length >= 2 ? trendChart(pts) : `<div class="empty">Your estimate over time will show here after a few more questions.</div>`}</div>
+    </section>
+    <div class="grid2">
+      <section class="panel card"><h2>By difficulty</h2><p class="cap">How you do as questions get harder.</p>
+        ${byD.map((o) => `<div class="drow"><span class="pill ${o.d}" style="justify-self:start">${o.d}</span>${o.n ? bar(Math.round((100 * o.c) / o.n)) : '<div class="bar" style="margin:0"></div>'}<span class="num">${o.n ? `${o.c}/${o.n} · ${Math.round((100 * o.c) / o.n)}%` : "none yet"}</span></div>`).join("")}
+      </section>
+      <section class="panel card"><h2>Recent pace</h2><p class="cap">Seconds spent on your last ${Math.min(20, H.length)} questions.</p>
+        ${H.length ? `<div class="drow" style="grid-template-columns:1fr"><div style="display:flex;align-items:flex-end;gap:3px;height:80px">${H.slice(-20).map((h) => `<div title="${mmss(h.t)} · ${h.ok ? "correct" : "missed"}" style="flex:1;border-radius:2px 2px 0 0;background:${h.ok ? "var(--good)" : "var(--bad)"};opacity:.85;height:${Math.max(4, Math.min(100, (h.t / (PACE * 2)) * 100))}%"></div>`).join("")}</div><div class="meter-scale"><span>older</span><span>taller = slower · top = 3:10</span><span>latest</span></div></div>` : `<div class="empty">No answers yet.</div>`}
+      </section>
+    </div>
+    <section class="panel card"><h2>By topic</h2><p class="cap">Domain rows show a rough score estimate for that area once you have answered 5 or more questions in it.</p>
+      <div class="tbl-wrap"><table class="tbl"><thead><tr><th>Topic</th><th class="num">Answered</th><th class="num">Accuracy</th><th></th><th class="num">Avg time / Est.</th><th class="num">Auto level</th></tr></thead><tbody>${rows}</tbody></table></div>
+    </section>`;
+  if (pts.length >= 2) wireTrend(pts);
+}
+
+/* ---------- views (hash routing) ---------- */
+function setView(v) {
+  view = v === "stats" ? "stats" : "practice";
+  $("view-practice").hidden = view !== "practice"; $("view-stats").hidden = view !== "stats";
+  $("tab-practice").setAttribute("aria-current", view === "practice" ? "page" : "false");
+  $("tab-stats").setAttribute("aria-current", view === "stats" ? "page" : "false");
+  $("page-title").textContent = view === "stats" ? "Your stats" : "SAT Math Practice";
+  $("page-sub").textContent = view === "stats" ? "Accuracy, pace and a rough score estimate, saved in this browser." : "Endless practice questions, checked by the same rules as the real test.";
+  if (view === "stats") renderStats();
+  else if (Q && Q.type === "spr" && !answered) $("spr-input").focus({ preventScroll: true });
+}
+const fromHash = () => setView(location.hash === "#stats" ? "stats" : "practice");
+window.addEventListener("hashchange", fromHash);
+const go = (v) => { if (location.hash !== "#" + v) location.hash = v; else setView(v); };
+
+/* ---------- reference sheet ---------- */
+let lastFocus = null;
+function openSheet() { lastFocus = document.activeElement; $("sheet").hidden = false; $("ref-close").focus(); }
+function closeSheet() { $("sheet").hidden = true; if (lastFocus && lastFocus.focus) lastFocus.focus({ preventScroll: true }); }
+const sheetOpen = () => !$("sheet").hidden;
+$("ref-btn").addEventListener("click", () => (sheetOpen() ? closeSheet() : openSheet()));
+$("ref-close").addEventListener("click", closeSheet);
+$("sheet").addEventListener("click", (e) => { if (e.target === $("sheet")) closeSheet(); });
+
+/* ---------- keyboard ---------- */
+document.addEventListener("keydown", (e) => {
+  if (e.ctrlKey || e.metaKey || e.altKey) return;
+  const inInput = e.target.tagName === "INPUT";
+  if (sheetOpen()) { if (e.key === "Escape" || e.key === "r" || e.key === "R") { e.preventDefault(); closeSheet(); } return; }
+  // Letters are never valid in a grid-in answer, so S, P and R work as shortcuts even while typing.
+  {
+    if (e.key === "r" || e.key === "R") { e.preventDefault(); openSheet(); return; }
+    if (e.key === "s" || e.key === "S") { e.preventDefault(); go("stats"); return; }
+    if (e.key === "p" || e.key === "P" || (e.key === "Escape" && view === "stats")) { e.preventDefault(); go("practice"); return; }
+  }
+  if (view !== "practice") return;
+  if (e.key === "Enter") { if (e.target.tagName === "BUTTON" && e.target.dataset.choice === undefined) return; e.preventDefault(); answered ? nextQuestion() : check(); return; }
+  if (!inInput && Q && Q.type === "mcq") { const i = LETTERS.indexOf(e.key.toUpperCase()); if (i >= 0) pickChoice(i); }
+});
+
+/* ---------- ASCII donut (a spinning torus, z-buffered and shaded per character) ---------- */
+(function donut() {
+  const el = $("donut"); if (!el) return;
+  const W = 40, H = 20, CH = ".,-~:;=!*#$@";
+  const frame = (A, B) => {
+    const out = new Array(W * H).fill(" "), zb = new Float32Array(W * H);
+    const cA = Math.cos(A), sA = Math.sin(A), cB = Math.cos(B), sB = Math.sin(B);
+    for (let j = 0; j < 6.283; j += 0.07) {
+      const ct = Math.cos(j), st = Math.sin(j);
+      for (let i = 0; i < 6.283; i += 0.02) {
+        const sp = Math.sin(i), cp = Math.cos(i), h = ct + 2;
+        const D = 1 / (sp * h * sA + st * cA + 5), t = sp * h * cA - st * sA;
+        const x = Math.floor(W / 2 + W * 0.6 * D * (cp * h * cB - t * sB));
+        const y = Math.floor(H / 2 + H * 0.6 * D * (cp * h * sB + t * cB));
+        const o = x + W * y;
+        if (y < 0 || y >= H || x < 0 || x >= W || D <= zb[o]) continue;
+        zb[o] = D;
+        const L = Math.floor(8 * ((st * sA - sp * ct * cA) * cB - sp * ct * sA - st * cA - cp * ct * sB));
+        out[o] = CH[L > 0 ? L : 0];
+      }
+    }
+    let s = ""; for (let r = 0; r < H; r++) s += out.slice(r * W, r * W + W).join("") + "\n";
+    return s;
+  };
+  let A = 1, B = 1;
+  if (window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches) { el.textContent = frame(A, B); return; }
+  let last = 0;
+  const step = (ts) => { if (ts - last > 45) { last = ts; A += 0.07; B += 0.03; el.textContent = frame(A, B); } requestAnimationFrame(step); };
+  requestAnimationFrame(step);
+})();
+
+renderControls(); renderProgress(); nextQuestion(); fromHash();
+
+</script>
+</body>
+</html>
